@@ -38,14 +38,7 @@ public abstract class Menu {
         print();
 
         // Get and validate user input
-        int input = getUserInput();
-
-        while (!isValidOption(input)) {
-            System.out.println("\u001B[31mInvalid input. Please try again.\u001B[0m");
-            input = getUserInput();
-        }
-
-        return input;
+        return getUserInput();
     }
 
     /**
@@ -54,13 +47,30 @@ public abstract class Menu {
     private int getUserInput() {
         int input = 0;
 
-        try {
-            System.out.print("Enter Menu Option: ");
-            input = console.nextInt(); // Read user input
-        } catch (InputMismatchException e) {
-            System.out.println("\u001B[31mInvalid input. Please enter a valid integer.\u001B[0m");
-            console.nextLine(); // Clear buffer
-        }
+        boolean isValid = false;
+
+        do {
+            try {
+                System.out.print("Enter Menu Option: ");
+                input = console.nextInt(); // Read user input
+
+                // Check if the input is within the valid range
+                if (isValidOption(input)) {
+                    isValid = true;
+                } else {
+                    throw new InvalidOptionException();
+                }
+
+            } catch (InvalidOptionException e) {
+                // Handle invalid input exception
+                System.out.println("\u001B[31m" + e.getMessage() + "\u001B[0m");
+                console.nextLine(); // Clear buffer
+            } catch (InputMismatchException e) {
+                System.out.println("\u001B[31mError: Please enter a valid integer.\u001B[0m");
+                console.nextLine(); // Clear buffer
+            }
+        } while (!isValid);
+
         return input;
     }
 

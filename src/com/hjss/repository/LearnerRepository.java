@@ -47,12 +47,7 @@ public class LearnerRepository implements Repository<Learner, Integer> {
     }
 
     @Override
-    public Learner create(Learner entity) {
-
-        if (!isValidAge(entity.getAge())) {
-            throw new IllegalArgumentException("Age must be between 4 and 11");
-        }
-
+    public Learner create(Learner entity) throws IllegalArgumentException {
         db.add(entity);
 
         return entity;
@@ -62,7 +57,7 @@ public class LearnerRepository implements Repository<Learner, Integer> {
      * @param age Learner's age
      * @return true if age is between 4 and 11.
      */
-    private boolean isValidAge(int age) {
+    public boolean isValidAge(int age) {
         return age >= 4 && age <= 11;
     }
 }
