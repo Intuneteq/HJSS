@@ -1,9 +1,11 @@
+import com.hjss.menu.MainMenu;
 import com.hjss.repository.LearnerRepository;
 
 public class App {
     private static App app;
     private final String name;
     private final LearnerRepository learnerRepository;
+
     private App() {
         name = "Hatfield Junior Swimming School";
         learnerRepository = new LearnerRepository();
@@ -19,7 +21,7 @@ public class App {
     public void start() {
         welcome();
 
-        run();
+        do run(); while (true);
     }
 
     public String getName() {
@@ -34,6 +36,10 @@ public class App {
     }
 
     private void run() {
+        var mainMenu = new MainMenu();
 
+        int input = mainMenu.execute();
+
+        System.out.println(input);
     }
 }
