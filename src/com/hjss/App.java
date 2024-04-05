@@ -5,14 +5,14 @@ import com.hjss.enums.Grade;
 
 import com.hjss.exceptions.InvalidAgeException;
 
-import com.hjss.menu.GenderMenu;
-import com.hjss.menu.GradeMenu;
-import com.hjss.menu.MainMenu;
+import com.hjss.menu.*;
 
-import com.hjss.menu.SelectLearnerMenu;
+import com.hjss.model.Coach;
 import com.hjss.model.Learner;
 
+import com.hjss.repository.CoachRepository;
 import com.hjss.repository.LearnerRepository;
+import com.hjss.repository.LessonRepository;
 
 import java.util.InputMismatchException;
 import java.util.List;
@@ -22,12 +22,16 @@ public class App {
     private static App app;
     private final String name;
     private final LearnerRepository learnerRepository;
+    private final CoachRepository coachRepository;
+    private final LessonRepository lessonRepository;
 
     private Learner learner;
 
     private App() {
         name = "Hatfield Junior Swimming School";
         learnerRepository = new LearnerRepository();
+        coachRepository = new CoachRepository();
+        lessonRepository = new LessonRepository(coachRepository);
     }
 
     public static App getInstance() {
@@ -62,9 +66,9 @@ public class App {
         switch (input) {
             case 1:
                 // Ensure we have the details of user prompting the application.
-                login();
-//
-//                handleBookASwimmingLesson();
+                handleLogin();
+
+                handleBookASwimmingLesson();
                 break;
             case 2:
                 // Ensure we have the details of user prompting the application.
@@ -161,7 +165,7 @@ public class App {
         System.out.println(learner);
     }
 
-    private void login() {
+    private void handleLogin() {
         var selectMenu = new SelectLearnerMenu();
 
         int input = selectMenu.execute();
@@ -170,11 +174,14 @@ public class App {
 
         Learner learner = learnerRepository.readById(input);
 
+        // It should never run but just being safe!
         if (learner == null) {
-            System.out.println("ERROR: Learner Not Found");
+            System.out.println();
+            System.out.println("\u001B[31mError: Learner Not Found.\u001B[0m");
             return;
         }
 
+        // Set active learner
         setLearner(learner);
 
         System.out.println();
@@ -182,9 +189,22 @@ public class App {
         System.out.println(learner);
     }
 
+    private void handleBookASwimmingLesson() {
+        var bookLessonMenu = new BookLessonMenu();
+
+        int input = bookLessonMenu.execute();
+
+        System.out.println();
+        System.out.println(lessonRepository.read());
+    }
+
 
     public List<Learner> getAppLearners() {
         return this.learnerRepository.read();
+    }
+
+    public List<Coach> getAppCoaches() {
+        return coachRepository.read();
     }
 
     public Learner getLearner() {
