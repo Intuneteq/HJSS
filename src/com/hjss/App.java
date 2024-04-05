@@ -8,10 +8,12 @@ import com.hjss.exceptions.InvalidAgeException;
 
 import com.hjss.menu.*;
 
+import com.hjss.model.Booking;
 import com.hjss.model.Coach;
 import com.hjss.model.Learner;
 
 import com.hjss.model.Lesson;
+import com.hjss.repository.BookingRepository;
 import com.hjss.repository.CoachRepository;
 import com.hjss.repository.LearnerRepository;
 import com.hjss.repository.LessonRepository;
@@ -25,6 +27,7 @@ public class App {
     private final LearnerRepository learnerRepository;
     private final CoachRepository coachRepository;
     private final LessonRepository lessonRepository;
+    private final BookingRepository bookingRepository;
 
     private Learner learner;
 
@@ -33,6 +36,7 @@ public class App {
         learnerRepository = new LearnerRepository();
         coachRepository = new CoachRepository();
         lessonRepository = new LessonRepository(coachRepository);
+        bookingRepository = new BookingRepository();
     }
 
     public static App getInstance() {
@@ -219,8 +223,9 @@ public class App {
 
         Lesson lesson = lessonRepository.readById(id);
 
-        System.out.println();
-        System.out.println(lesson);
+        Booking booking = bookingRepository.create(new Booking(getLearner(), lesson));
+
+
     }
 
     private List<Lesson> handleBookByDay() {

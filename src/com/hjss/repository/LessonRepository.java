@@ -1,6 +1,5 @@
 package com.hjss.repository;
 
-import com.hjss.App;
 import com.hjss.enums.Day;
 import com.hjss.enums.Grade;
 import com.hjss.enums.Time;

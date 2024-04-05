@@ -2,8 +2,13 @@ package com.hjss.model;
 
 import com.hjss.App;
 import com.hjss.enums.Grade;
+import com.hjss.observers.LessonObserver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Lesson {
+    private final List<LessonObserver> observers = new ArrayList<>();
     static int count = 0;
 
     /**
@@ -74,6 +79,26 @@ public class Lesson {
      */
     public Coach getCoach() {
         return coach;
+    }
+
+    public void addObserver(LessonObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(LessonObserver observer) {
+        observers.remove(observer);
+    }
+
+    public void notifyBookingAttended() {
+        for (LessonObserver observer : observers) {
+            observer.onBookingAttended();
+        }
+    }
+
+    public void notifyBookingCancelled() {
+        for (LessonObserver observer : observers) {
+            observer.onBookingCancelled();
+        }
     }
 
     public String toString() {
