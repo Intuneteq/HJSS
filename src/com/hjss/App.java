@@ -1,3 +1,5 @@
+package com.hjss;
+
 import com.hjss.enums.Gender;
 import com.hjss.enums.Grade;
 
@@ -7,17 +9,21 @@ import com.hjss.menu.GenderMenu;
 import com.hjss.menu.GradeMenu;
 import com.hjss.menu.MainMenu;
 
+import com.hjss.menu.SelectLearnerMenu;
 import com.hjss.model.Learner;
 
 import com.hjss.repository.LearnerRepository;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
     private static App app;
     private final String name;
     private final LearnerRepository learnerRepository;
+
+    private Learner learner;
 
     private App() {
         name = "Hatfield Junior Swimming School";
@@ -56,7 +62,7 @@ public class App {
         switch (input) {
             case 1:
                 // Ensure we have the details of user prompting the application.
-//                setAppUser(learnerService.login());
+                login();
 //
 //                handleBookASwimmingLesson();
                 break;
@@ -120,7 +126,7 @@ public class App {
                 System.out.println("\u001B[31mError: Please enter a valid age.\u001B[0m");
                 console.nextLine(); // Clear the buffer
             } catch (InvalidAgeException e) {
-                System.out.println("\u001B[31m"+ e.getMessage() + "\u001B[0m");
+                System.out.println("\u001B[31m" + e.getMessage() + "\u001B[0m");
                 console.nextLine(); // Clear the buffer
             }
         } while (!isValidAge);
@@ -153,5 +159,39 @@ public class App {
         System.out.println();
 
         System.out.println(learner);
+    }
+
+    private void login() {
+        var selectMenu = new SelectLearnerMenu();
+
+        int input = selectMenu.execute();
+
+        if (input == 0) System.exit(0);
+
+        Learner learner = learnerRepository.readById(input);
+
+        if (learner == null) {
+            System.out.println("ERROR: Learner Not Found");
+            return;
+        }
+
+        setLearner(learner);
+
+        System.out.println();
+        System.out.println("You are logged in as: ");
+        System.out.println(learner);
+    }
+
+
+    public List<Learner> getAppLearners() {
+        return this.learnerRepository.read();
+    }
+
+    public Learner getLearner() {
+        return learner;
+    }
+
+    public void setLearner(Learner learner) {
+        this.learner = learner;
     }
 }

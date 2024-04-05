@@ -1,9 +1,11 @@
 package com.hjss.menu;
 
 import com.hjss.exceptions.InvalidOptionException;
+import com.hjss.model.Learner;
 
 import java.text.DecimalFormat;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 /**

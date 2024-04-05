@@ -1,5 +1,7 @@
 package com.hjss.repository;
 
+import com.hjss.model.Learner;
+
 import java.util.ArrayList;
 import java.util.List;
 

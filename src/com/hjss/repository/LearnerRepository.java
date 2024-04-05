@@ -47,7 +47,7 @@ public class LearnerRepository implements Repository<Learner, Integer> {
     }
 
     @Override
-    public Learner create(Learner entity) throws IllegalArgumentException {
+    public Learner create(Learner entity) {
         db.add(entity);
 
         return entity;
