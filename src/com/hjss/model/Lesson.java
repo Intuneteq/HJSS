@@ -31,7 +31,7 @@ public class Lesson {
      */
     private final Grade grade;
 
-    private final int size;
+    private int size;
 
 
     public Lesson(Grade grade, TimeSlot timeSlot, Coach coach) {
@@ -81,6 +81,18 @@ public class Lesson {
         return coach;
     }
 
+    public void decrementBySize() {
+        if (size > 0) {
+            size -= 1;
+        }
+    }
+
+    public void incrementBySize() {
+        if (size < 4) {
+            size += 1;
+        }
+    }
+
     public void addObserver(LessonObserver observer) {
         observers.add(observer);
     }
@@ -91,13 +103,13 @@ public class Lesson {
 
     public void notifyBookingAttended() {
         for (LessonObserver observer : observers) {
-            observer.onBookingAttended();
+            observer.onBookingAttended(this);
         }
     }
 
     public void notifyBookingCancelled() {
         for (LessonObserver observer : observers) {
-            observer.onBookingCancelled();
+            observer.onBookingCancelled(this);
         }
     }
 
