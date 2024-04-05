@@ -35,6 +35,39 @@ public class LessonRepository implements Repository<Lesson, Integer> {
         return db;
     }
 
+    public List<Lesson> read(Day day) {
+        List<Lesson> lessons = new ArrayList<>();
+        for (Lesson ls: db) {
+            if (ls.getTimeSlot().day().equals(day)) {
+                lessons.add(ls);
+            }
+        }
+
+        return lessons;
+    }
+
+    public List<Lesson> read(Grade grade) {
+        List<Lesson> lessons = new ArrayList<>();
+        for (Lesson ls: db) {
+            if (ls.getGrade().equals(grade)) {
+                lessons.add(ls);
+            }
+        }
+
+        return lessons;
+    }
+
+    public List<Lesson> read(Coach coach) {
+        List<Lesson> lessons = new ArrayList<>();
+        for (Lesson ls: db) {
+            if (ls.getCoach().equals(coach)) {
+                lessons.add(ls);
+            }
+        }
+
+        return lessons;
+    }
+
     @Override
     public Lesson readById(Integer id) {
         for (Lesson ls : db) {
@@ -105,5 +138,28 @@ public class LessonRepository implements Repository<Lesson, Integer> {
             }
         }
 
+    }
+
+    public String showTimeTable(List<Lesson> lessons) {
+        int slash, weekCount = 1;
+
+        StringBuilder s = new StringBuilder();
+
+        for (int i = 0; i < lessons.size(); i++) {
+            Lesson lesson = lessons.get(i);
+
+            if (lesson.getTimeSlot().day() == Day.SATURDAY) {
+                slash = 2;
+            } else {
+                slash = 3;
+            }
+
+            if (i % slash == 0) {
+                // Print week header
+                s.append("== Week ").append(weekCount++).append(" ==").append("\n");
+            }
+            s.append(lesson).append("\n\n");
+        }
+        return s.toString();
     }
 }

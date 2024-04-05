@@ -1,8 +1,7 @@
 package com.hjss.model;
 
+import com.hjss.App;
 import com.hjss.enums.Grade;
-
-import java.util.List;
 
 public class Lesson {
     static int count = 0;
@@ -78,6 +77,6 @@ public class Lesson {
     }
 
     public String toString() {
-        return "Id: " + getId() + "Day: " + getTimeSlot().day() + "Time: " + getTimeSlot().time() + "Grade: " + getGrade() + "Coach: " + getCoach().getName() + "Vacancy: " + getVacancy();
+        return "Id: " + App.padToTwoDigits(getId()) + " | " + "Day: " + getTimeSlot().day() + " | " + "Time: " + getTimeSlot().time().getValue() + " | " + "Grade: " + getGrade() + " | " + "Coach: " + getCoach().getName() + " | " + "Vacancy: " + getVacancy();
     }
 }

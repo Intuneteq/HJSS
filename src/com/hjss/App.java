@@ -1,5 +1,6 @@
 package com.hjss;
 
+import com.hjss.enums.Day;
 import com.hjss.enums.Gender;
 import com.hjss.enums.Grade;
 
@@ -10,13 +11,13 @@ import com.hjss.menu.*;
 import com.hjss.model.Coach;
 import com.hjss.model.Learner;
 
+import com.hjss.model.Lesson;
 import com.hjss.repository.CoachRepository;
 import com.hjss.repository.LearnerRepository;
 import com.hjss.repository.LessonRepository;
 
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.text.DecimalFormat;
+import java.util.*;
 
 public class App {
     private static App app;
@@ -190,12 +191,79 @@ public class App {
     }
 
     private void handleBookASwimmingLesson() {
+        int input;
         var bookLessonMenu = new BookLessonMenu();
 
-        int input = bookLessonMenu.execute();
+        input = bookLessonMenu.execute();
+
+        List<Lesson> lessons = switch (input) {
+            case 1 -> handleBookByDay();
+            case 2 -> handleBookByCoach();
+            case 3 -> handleBookByGrade();
+            default -> null;
+        };
+
+        if (lessons == null) System.exit(0);
+
+        String timeTable = lessonRepository.showTimeTable(lessons);
+
+        Set<Integer> lessonIds = new HashSet<>();
+
+        for (Lesson lesson : lessons) {
+            lessonIds.add(lesson.getId());
+        }
+
+        var timeTableMenu = new TimeTableMenu(timeTable, lessonIds);
+
+        int id = timeTableMenu.execute();
+
+        Lesson lesson = lessonRepository.readById(id);
 
         System.out.println();
-        System.out.println(lessonRepository.read());
+        System.out.println(lesson);
+    }
+
+    private List<Lesson> handleBookByDay() {
+        var dayMenu = new DayMenu();
+
+        int input = dayMenu.execute();
+
+        Day day = switch (input) {
+            case 1 -> Day.MONDAY;
+            case 2 -> Day.WEDNESDAY;
+            case 3 -> Day.FRIDAY;
+            case 4 -> Day.SATURDAY;
+            default -> null;
+        };
+
+        return lessonRepository.read(day);
+    }
+
+    private List<Lesson> handleBookByCoach() {
+        var coachMenu = new CoachMenu();
+
+        int id = coachMenu.execute();
+
+        Coach coach = coachRepository.readById(id);
+
+        return lessonRepository.read(coach);
+    }
+
+    private List<Lesson> handleBookByGrade() {
+        var gradeMenu = new GradeMenu();
+
+        int input = gradeMenu.execute();
+
+        Grade grade = switch (input) {
+            case 1 -> Grade.ONE;
+            case 2 -> Grade.TWO;
+            case 3 -> Grade.THREE;
+            case 4 -> Grade.FOUR;
+            case 5 -> Grade.FIVE;
+            default -> null;
+        };
+
+        return lessonRepository.read(grade);
     }
 
 
@@ -213,5 +281,10 @@ public class App {
 
     public void setLearner(Learner learner) {
         this.learner = learner;
+    }
+
+    public static String padToTwoDigits(double number) {
+        DecimalFormat df = new DecimalFormat("00");
+        return df.format(number);
     }
 }
