@@ -16,11 +16,12 @@ public class ReviewRepository implements Repository<Review, Integer> {
     public List<Review> read() {
         return db;
     }
+
     public List<Review> read(Coach coach) {
         List<Review> reviews = new ArrayList<>();
 
-        for (Review review: db) {
-            if(review.getBooking().getLesson().getCoach().equals(coach)) {
+        for (Review review : db) {
+            if (review.getBooking().getLesson().getCoach().equals(coach)) {
                 reviews.add(review);
             }
         }
@@ -35,6 +36,11 @@ public class ReviewRepository implements Repository<Review, Integer> {
     public Review create(Review entity) {
         db.add(entity);
         return entity;
+    }
+
+    @Override
+    public void removeAll() {
+        db.clear();
     }
 
     public float getAvgRating(List<Review> reviews) {

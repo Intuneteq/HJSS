@@ -82,6 +82,11 @@ public class BookingRepository implements Repository<Booking, Integer> {
         return entity;
     }
 
+    @Override
+    public void removeAll() {
+        db.clear();
+    }
+
     public Booking attend(Booking entity) throws BookingCancelledException, GradeMisMatchException {
         if (entity.getAttendanceStatus()) {
             return entity;

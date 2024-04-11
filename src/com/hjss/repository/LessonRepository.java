@@ -84,6 +84,11 @@ public class LessonRepository implements Repository<Lesson, Integer> {
         return entity;
     }
 
+    @Override
+    public void removeAll() {
+        db.clear();
+    }
+
     private void createTimeSlots() {
         Day[] days = Day.values();
         Time[] lessonTime = Time.values();

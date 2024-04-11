@@ -41,4 +41,9 @@ public class CoachRepository implements Repository<Coach, Integer> {
 
         return entity;
     }
+
+    @Override
+    public void removeAll() {
+        db.clear();
+    }
 }
