@@ -4,15 +4,13 @@ import com.hjss.enums.Day;
 import com.hjss.enums.Gender;
 import com.hjss.enums.Grade;
 
+import com.hjss.enums.Rating;
 import com.hjss.exceptions.*;
 
 import com.hjss.menu.*;
 
-import com.hjss.model.Booking;
-import com.hjss.model.Coach;
-import com.hjss.model.Learner;
+import com.hjss.model.*;
 
-import com.hjss.model.Lesson;
 import com.hjss.repository.BookingRepository;
 import com.hjss.repository.CoachRepository;
 import com.hjss.repository.LearnerRepository;
@@ -76,7 +74,7 @@ public class App {
                 break;
             case 2:
                 handleLogin();
-//
+
                 handleCancelChangeBooking();
                 break;
             case 3:
@@ -85,10 +83,10 @@ public class App {
                 handleAttendSwimmingLesson();
                 break;
             case 4:
-//                handleShowLearnerReport();
+                handleShowLearnerReport();
                 break;
             case 5:
-//                handleShowCoachReport();
+                handleShowCoachReport();
                 break;
             case 6:
                 handleRegistration();
@@ -292,6 +290,84 @@ public class App {
 
         System.out.println("Booking Itinerary: ");
         System.out.println(booking);
+
+        // Give review
+        var ratingMenu = new RatingMenu();
+
+        Rating rating = switch (ratingMenu.execute()) {
+            case 1 -> Rating.One;
+            case 2 -> Rating.Two;
+            case 3 -> Rating.Three;
+            case 4 -> Rating.Four;
+            case 5 -> Rating.Five;
+            default -> null;
+        };
+
+        if (rating == null) System.exit(0);
+
+        Scanner console = new Scanner(System.in);
+
+        System.out.print("Kindly give review feedback: ");
+        String feedback = console.nextLine();
+
+        var review = new Review(rating, feedback, booking);
+
+        System.out.println();
+        System.out.println("\u001B[32mThank you for making your review!\u001B[0m");
+        System.out.println();
+
+        System.out.println("Review Information: ");
+        System.out.println(review);
+    }
+
+    /**
+     * Handles the printing of the learners' report for the month at Hatfield Junior Swimming School.
+     * This report includes detailed information about each learner's bookings,
+     * cancellations, and attendance for the month.
+     */
+    private void handleShowLearnerReport() {
+        System.out.println();
+        System.out.println("Report For Hatfield Junior Swimming School Learners For The Month");
+
+
+        // Get all Learners
+        List<Learner> learners = getAppLearners();
+
+        for (Learner lr : learners) {
+            System.out.println();
+            // Get Learner bookings, cancelled bookings, and attended bookings
+            List<Booking> bookings = bookingRepository.read(lr);
+
+            List<Booking> canceledBookings = bookingRepository.read(lr, "cancelled");
+            List<Booking> attendedBookings = bookingRepository.read(lr, "attended");
+
+            // Print student information and statistics
+            System.out.println(lr + "\nTotal Booking: " + bookings.size() + "\nTotal Attendance: " + attendedBookings.size() + "\nTotal Cancellations: " + canceledBookings.size());
+
+            // Print lessons booked by the learner
+            System.out.println();
+            System.out.println("Lessons booked by " + lr.getName() + ":");
+            if (bookings.isEmpty()) {
+                System.out.println();
+                System.out.println("\u001B[31m" + lr.getName() + " has no lesson history\u001B[0m");
+            } else {
+                // Lessons
+                for (Booking bk : bookings) {
+                    System.out.println(bk.getLesson());
+                }
+            }
+
+            System.out.println("--------------------------------------");
+        }
+    }
+
+    private void handleShowCoachReport() {
+        // Print each coach name,and average rating
+        List<Coach> coaches = getAppCoaches();
+
+        for (Coach coach : coaches) {
+
+        }
     }
 
     private List<Lesson> handleBookByDay() {

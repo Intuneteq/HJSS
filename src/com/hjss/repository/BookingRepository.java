@@ -33,6 +33,20 @@ public class BookingRepository implements Repository<Booking, Integer> {
         return bookings;
     }
 
+    public List<Booking> read(Learner learner, String filter) {
+        List<Booking> bookings = new ArrayList<>();
+
+        for (Booking booking : db) {
+            if (booking.getLearner().equals(learner) && filter.equals("cancelled") && booking.getCancellationStatus()) {
+                bookings.add(booking);
+            } else if (booking.getLearner().equals(learner) && filter.equals("attended") && booking.getAttendanceStatus()) {
+                bookings.add(booking);
+            }
+        }
+
+        return bookings;
+    }
+
     @Override
     public Booking readById(Integer id) {
         for (Booking booking : db) {
