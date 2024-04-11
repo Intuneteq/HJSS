@@ -231,6 +231,9 @@ public class App {
         } catch (GradeMisMatchException | DuplicateBookingException | NoVacancyException e) {
             System.out.println();
             System.out.println("\u001B[31mError: " + e.getMessage() + "\u001B[0m");
+
+            // Recursively prompt the user to retry booking
+            handleBookASwimmingLesson();
             return;
         }
 

@@ -147,7 +147,7 @@ public class LessonRepository implements Repository<Lesson, Integer> {
         for (Lesson ls : lessons) {
             // Calculate the week number based on the lesson ID
             // Since each week consists of 11 lessons,
-            // We divide the lesson ID by 11 and add 1 to get the week number.
+            // Divide the lesson ID by 11 and add 1 to get the week number.
             int week = (ls.getId() - 1) / 11 + 1;
 
             // Check if the calculated week number is different from the current week
