@@ -22,6 +22,17 @@ public class BookingRepository implements Repository<Booking, Integer> {
         return db;
     }
 
+    public List<Booking> read(Learner learner) {
+        List<Booking> bookings = new ArrayList<>();
+        for (Booking booking : db) {
+            if (booking.getLearner().equals(learner)) {
+                bookings.add(booking);
+            }
+        }
+
+        return bookings;
+    }
+
     @Override
     public Booking readById(Integer id) {
         for (Booking booking : db) {
@@ -48,6 +59,9 @@ public class BookingRepository implements Repository<Booking, Integer> {
         if (validateDuplicateBooking(entity)) {
             throw new DuplicateBookingException();
         }
+
+        // Reduce lesson vacancy
+        entity.getLesson().incrementBySize();
 
         db.add(entity);
 
@@ -112,17 +126,17 @@ public class BookingRepository implements Repository<Booking, Integer> {
     private boolean validateGradeMatch(Booking entity) {
         Grade lessonGrade = entity.getLesson().getGrade();
         Grade learnerGrade = entity.getLearner().getGrade();
-        Grade learnerGradeOneHigher = Grade.values()[learnerGrade.getValue() + 1 + 1];
 
-        return lessonGrade == learnerGrade || lessonGrade == learnerGradeOneHigher;
+        // learner grade == lesson grade or lesson grade > learner grade by 1
+        return lessonGrade == learnerGrade || (learnerGrade.getValue() + 1 == lessonGrade.getValue());
     }
 
     private boolean validateGradeMatch(Booking entity, Lesson newLesson) {
         Grade lessonGrade = newLesson.getGrade();
         Grade learnerGrade = entity.getLearner().getGrade();
-        Grade learnerGradeOneHigher = Grade.values()[learnerGrade.getValue() + 1 + 1];
 
-        return lessonGrade == learnerGrade || lessonGrade == learnerGradeOneHigher;
+        // learner grade == lesson grade or lesson grade > learner grade by 1
+        return lessonGrade == learnerGrade || (learnerGrade.getValue() + 1 == lessonGrade.getValue());
     }
 
     private boolean validateDuplicateBooking(Booking entity) {

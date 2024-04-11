@@ -38,8 +38,8 @@ public class Booking {
     }
 
     public void setAttendanceStatus() {
-        // Reduce vacancy
-        this.getLesson().decrementBySize();
+        // Ensure that the learner's grade and lesson's grade are the same!
+        learner.setGrade(lesson.getGrade());
 
         //set to true
         this.attendanceStatus = true;
@@ -58,6 +58,6 @@ public class Booking {
     }
 
     public String toString() {
-        return "Id: " + getId() + "\nLesson Id: " + getLesson().getId() + "\nBooked By: " + getLearner().getName() + "\nAttendance Status: " + getAttendanceStatus() + "\nCancellation Status: " + getCancellationStatus();
+        return "Id: " + getId() + "\nLesson Id: " + getLesson().getId() + "\nLesson Grade: " + getLesson().getGrade() + "\nBooked By: " + getLearner().getName() + "\nAttendance Status: " + getAttendanceStatus() + "\nCancellation Status: " + getCancellationStatus();
     }
 }

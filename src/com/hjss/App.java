@@ -4,11 +4,8 @@ import com.hjss.enums.Day;
 import com.hjss.enums.Gender;
 import com.hjss.enums.Grade;
 
-import com.hjss.exceptions.DuplicateBookingException;
-import com.hjss.exceptions.GradeMisMatchException;
-import com.hjss.exceptions.InvalidAgeException;
+import com.hjss.exceptions.*;
 
-import com.hjss.exceptions.NoVacancyException;
 import com.hjss.menu.*;
 
 import com.hjss.model.Booking;
@@ -241,6 +238,7 @@ public class App {
         System.out.println("\u001B[32mSuccess: Your Booking was completed successfully!\u001B[0m");
         System.out.println();
 
+        System.out.println("Booking Itinerary: ");
         System.out.println(booking);
     }
 
@@ -302,8 +300,47 @@ public class App {
 
         return lessonRepository.read(grade);
     }
-    private void handleCancelBooking(){}
-    private void handleChangeBooking(){}
+
+    private void handleCancelBooking() {
+        Booking booking = null;
+        List<Booking> bookings = bookingRepository.read(getLearner());
+
+        if (bookings.isEmpty()) {
+            System.out.println();
+            System.out.println("\u001B[32mBooking List is currently empty!\u001B[0m");
+            return;
+        }
+
+        var bookingMenu = new BookingMenu(bookings);
+
+        int bookingId = bookingMenu.execute();
+
+        booking = bookingRepository.readById(bookingId);
+
+        if (booking == null) {
+            System.out.println("\u001B[31mError: Booking Not Found!\u001B[0m");
+            return;
+        }
+
+        try {
+            booking = bookingRepository.cancel(booking);
+        } catch (BookingAttendedException e) {
+            System.out.println("\u001B[31mError: " + e.getMessage() + "\u001B[0m");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("\u001B[32mSuccess: Your Booking was Cancelled successfully!\u001B[0m");
+        System.out.println();
+
+        System.out.println("Booking Itinerary: ");
+        System.out.println(booking);
+
+    }
+
+    private void handleChangeBooking() {
+    }
+
     public List<Learner> getAppLearners() {
         return this.learnerRepository.read();
     }

@@ -6,6 +6,7 @@ public class GradeMenu extends Menu{
      */
     @Override
     protected void print() {
+        System.out.println();
         System.out.println("Select Grade: ");
         System.out.println("[1]: One");
         System.out.println("[2]: Two");
