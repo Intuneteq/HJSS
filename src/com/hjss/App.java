@@ -80,10 +80,9 @@ public class App {
                 handleCancelChangeBooking();
                 break;
             case 3:
-                // Ensure we have the details of user prompting the application.
-//                setAppUser(learnerService.login());
-//
-//                handleAttendSwimmingLesson();
+                handleLogin();
+
+                handleAttendSwimmingLesson();
                 break;
             case 4:
 //                handleShowLearnerReport();
@@ -258,6 +257,43 @@ public class App {
         }
     }
 
+    private void handleAttendSwimmingLesson() {
+        Booking booking = null;
+        List<Booking> bookings = bookingRepository.read(getLearner());
+
+        if (bookings.isEmpty()) {
+            System.out.println();
+            System.out.println("\u001B[32mBooking List is currently empty!\u001B[0m");
+            return;
+        }
+
+        var bookingMenu = new BookingMenu(bookings);
+
+        int bookingId = bookingMenu.execute();
+
+        booking = bookingRepository.readById(bookingId);
+
+        if (booking == null) {
+            System.out.println("\u001B[31mError: Booking Not Found!\u001B[0m");
+            return;
+        }
+
+        try {
+            booking = bookingRepository.attend(booking);
+        } catch (BookingCancelledException | GradeMisMatchException e) {
+            System.out.println();
+            System.out.println("\u001B[31mError: " + e.getMessage() + "\u001B[0m");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("\u001B[32mSuccess: Your Booking was Attended successfully!\u001B[0m");
+        System.out.println();
+
+        System.out.println("Booking Itinerary: ");
+        System.out.println(booking);
+    }
+
     private List<Lesson> handleBookByDay() {
         var dayMenu = new DayMenu();
 
@@ -335,7 +371,6 @@ public class App {
 
         System.out.println("Booking Itinerary: ");
         System.out.println(booking);
-
     }
 
     private void handleChangeBooking() {

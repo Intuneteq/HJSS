@@ -46,7 +46,7 @@ public class BookingRepository implements Repository<Booking, Integer> {
     @Override
     public Booking create(Booking entity) throws GradeMisMatchException, DuplicateBookingException, NoVacancyException {
         // check lesson-student grade
-        if (!validateGradeMatch(entity)) {
+        if (validateGradeMatch(entity)) {
             throw new GradeMisMatchException();
         }
 
@@ -68,7 +68,25 @@ public class BookingRepository implements Repository<Booking, Integer> {
         return entity;
     }
 
-    public Booking attendLesson(Booking entity) {
+    public Booking attend(Booking entity) throws BookingCancelledException, GradeMisMatchException {
+        if (entity.getAttendanceStatus()) {
+            return entity;
+        }
+
+        if (entity.getCancellationStatus()) {
+            throw new BookingCancelledException();
+        }
+
+        if (validateGradeMatch(entity)) {
+            // Learner's grade has been updated since they last booked the lesson
+            // So we cancel the booking and free up lesson vacancy
+            entity.setCancellationStatus();
+
+            // Then throw a grade mismatch error
+            throw new GradeMisMatchException();
+        }
+
+        // Ensure learner's grade is still in range of lesson grade
         entity.setAttendanceStatus();
 
         return entity;
@@ -128,7 +146,7 @@ public class BookingRepository implements Repository<Booking, Integer> {
         Grade learnerGrade = entity.getLearner().getGrade();
 
         // learner grade == lesson grade or lesson grade > learner grade by 1
-        return lessonGrade == learnerGrade || (learnerGrade.getValue() + 1 == lessonGrade.getValue());
+        return lessonGrade != learnerGrade && (learnerGrade.getValue() + 1 != lessonGrade.getValue());
     }
 
     private boolean validateGradeMatch(Booking entity, Lesson newLesson) {
@@ -161,3 +179,6 @@ public class BookingRepository implements Repository<Booking, Integer> {
         return ls.getVacancy() < 1;
     }
 }
+
+// Implement an observer
+// to cancel all bookings lower than their current grade when a learner attends a lesson with a higher grade

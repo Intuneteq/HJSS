@@ -51,7 +51,7 @@ public class Booking {
 
     public void setCancellationStatus() {
         // Increase Vacancy
-        this.getLesson().incrementBySize();
+        this.getLesson().decrementBySize();
 
         // Cancel booking
         this.cancellationStatus = true;
