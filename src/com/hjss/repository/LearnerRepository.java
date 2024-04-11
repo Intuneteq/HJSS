@@ -12,6 +12,7 @@ public class LearnerRepository implements Repository<Learner, Integer> {
     public LearnerRepository() {
         seed();
     }
+
     @Override
     public void seed() {
         db.add(new Learner("Tobi", Gender.Male, 5, "08148809628", Grade.ONE));
@@ -24,7 +25,7 @@ public class LearnerRepository implements Repository<Learner, Integer> {
         db.add(new Learner("Ava", Gender.Female, 7, "08148809635", Grade.THREE));
         db.add(new Learner("Lucas", Gender.Male, 8, "08148809636", Grade.FOUR));
         db.add(new Learner("Isabella", Gender.Female, 9, "08148809637", Grade.FIVE));
-        db.add(new Learner( "James", Gender.Male, 4, "08148809638", Grade.ONE));
+        db.add(new Learner("James", Gender.Male, 4, "08148809638", Grade.ONE));
         db.add(new Learner("Mia", Gender.Female, 5, "08148809639", Grade.TWO));
         db.add(new Learner("Ethan", Gender.Male, 6, "08148809640", Grade.THREE));
         db.add(new Learner("Charlotte", Gender.Female, 7, "08148809641", Grade.FOUR));
@@ -38,8 +39,8 @@ public class LearnerRepository implements Repository<Learner, Integer> {
 
     @Override
     public Learner readById(Integer id) {
-        for(Learner lnr: db) {
-            if(lnr.getId() == id) {
+        for (Learner lnr : db) {
+            if (lnr.getId() == id) {
                 return lnr;
             }
         }
@@ -51,6 +52,10 @@ public class LearnerRepository implements Repository<Learner, Integer> {
         db.add(entity);
 
         return entity;
+    }
+
+    public void removeAll() {
+        db.clear();
     }
 
     /**
