@@ -11,10 +11,7 @@ import com.hjss.menu.*;
 
 import com.hjss.model.*;
 
-import com.hjss.repository.BookingRepository;
-import com.hjss.repository.CoachRepository;
-import com.hjss.repository.LearnerRepository;
-import com.hjss.repository.LessonRepository;
+import com.hjss.repository.*;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -26,6 +23,7 @@ public class App {
     private final CoachRepository coachRepository;
     private final LessonRepository lessonRepository;
     private final BookingRepository bookingRepository;
+    private final ReviewRepository reviewRepository;
 
     private Learner learner;
 
@@ -35,6 +33,7 @@ public class App {
         coachRepository = new CoachRepository();
         lessonRepository = new LessonRepository(coachRepository);
         bookingRepository = new BookingRepository();
+        reviewRepository = new ReviewRepository();
     }
 
     public static App getInstance() {
@@ -310,7 +309,11 @@ public class App {
         System.out.print("Kindly give review feedback: ");
         String feedback = console.nextLine();
 
-        var review = new Review(rating, feedback, booking);
+        Review review;
+
+        review = new Review(rating, feedback, booking);
+
+        review = reviewRepository.create(review);
 
         System.out.println();
         System.out.println("\u001B[32mThank you for making your review!\u001B[0m");
@@ -362,11 +365,20 @@ public class App {
     }
 
     private void handleShowCoachReport() {
+        System.out.println();
         // Print each coach name,and average rating
         List<Coach> coaches = getAppCoaches();
 
-        for (Coach coach : coaches) {
 
+        System.out.println("************** Coaches Review **************");
+        System.out.println("----------------------------------------");
+        for (Coach coach : coaches) {
+            List<Review> reviews = reviewRepository.read(coach);
+
+            float avgRating = reviewRepository.getAvgRating(reviews);
+            System.out.printf("| Name: %-7s | Average Rating: %.2f | %n", coach.getName(), avgRating);
+
+            System.out.println("----------------------------------------");
         }
     }
 

@@ -10,7 +10,7 @@ public class Coach {
     /**
      * Coach Name
      */
-    private String name;
+    private final String name;
 
     /**
      * @param name Coach Name
@@ -32,10 +32,6 @@ public class Coach {
      */
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String toString() {
