@@ -155,7 +155,14 @@ public class App {
             default -> null;
         };
 
-        Learner learner = learnerRepository.create(new Learner(name, gender, age, contactNumber, grade));
+
+        Learner learner = null;
+        try {
+            learner = learnerRepository.create(new Learner(name, gender, age, contactNumber, grade));
+        } catch (InvalidAgeException e) {
+            System.out.println("\u001B[31m" + e.getMessage() + "\u001B[0m");
+            return;
+        }
 
         System.out.println();
         System.out.println("\u001B[32mSuccess: Your Registration was completed successfully!\u001B[0m");

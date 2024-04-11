@@ -2,6 +2,7 @@ package com.hjss.tests;
 
 import com.hjss.enums.Gender;
 import com.hjss.enums.Grade;
+import com.hjss.exceptions.InvalidAgeException;
 import com.hjss.model.Learner;
 
 import com.hjss.repository.LearnerRepository;
@@ -40,7 +41,12 @@ class LearnerRepositoryTest {
 
     @Test
     void testRead() {
-        Learner learner = learnerRepository.create(testLearner);
+        Learner learner = null;
+        try {
+            learner = learnerRepository.create(testLearner);
+        } catch (InvalidAgeException e) {
+            fail("Unexpected Error occurred when creating a learner to test read " + e.getMessage());
+        }
 
         List<Learner> learners = learnerRepository.read();
 
@@ -52,7 +58,12 @@ class LearnerRepositoryTest {
 
     @Test
     void readById() {
-        Learner learner = learnerRepository.create(testLearner);
+        Learner learner = null;
+        try {
+            learner = learnerRepository.create(testLearner);
+        } catch (InvalidAgeException e) {
+            fail("Unexpected Error occurred when creating a learner to test read by id " + e.getMessage());
+        }
 
         Learner getLearner = learnerRepository.readById(learner.getId());
 
@@ -62,7 +73,12 @@ class LearnerRepositoryTest {
 
     @Test
     void create() {
-        Learner newLearner = learnerRepository.create(testLearner);
+        Learner newLearner = null;
+        try {
+            newLearner = learnerRepository.create(testLearner);
+        } catch (InvalidAgeException e) {
+            fail("Unexpected Error occurred when creating a learner to test create " + e.getMessage());
+        }
         List<Learner> learners = learnerRepository.read();
 
         // Assert db is updated

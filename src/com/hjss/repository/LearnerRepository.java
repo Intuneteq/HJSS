@@ -1,6 +1,7 @@
 package com.hjss.repository;
 
 import com.hjss.enums.*;
+import com.hjss.exceptions.InvalidAgeException;
 import com.hjss.model.Learner;
 
 import java.util.ArrayList;
@@ -48,10 +49,12 @@ public class LearnerRepository implements Repository<Learner, Integer> {
     }
 
     @Override
-    public Learner create(Learner entity) {
-        db.add(entity);
-
-        return entity;
+    public Learner create(Learner entity) throws InvalidAgeException {
+        if (isValidAge(entity.getAge())) {
+            db.add(entity);
+            return entity;
+        }
+        throw new InvalidAgeException();
     }
 
     public void removeAll() {
