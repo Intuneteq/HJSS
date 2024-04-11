@@ -17,7 +17,7 @@ public class TimeTableMenu extends Menu{
     @Override
     protected void print() {
         System.out.println();
-        System.out.println("************** Book A Lesson **************");
+        System.out.println("************************************ Book A Lesson ************************************");
         System.out.println(timeTable);
     }
 

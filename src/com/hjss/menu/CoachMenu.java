@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CoachMenu extends Menu{
+public class CoachMenu extends Menu {
     private final List<Coach> coaches;
     private final Set<Integer> coachIds;
 
@@ -23,13 +23,14 @@ public class CoachMenu extends Menu{
         }
 
     }
+
     /**
      * Displays the options to the user.
      */
     @Override
     protected void print() {
         System.out.println();
-        System.out.println("Select Learner: ");
+        System.out.println("************** Book By Coach **************");
         for (Coach coach : coaches) {
             System.out.println("[" + padToTwoDigits(coach.getId()) + "]: " + coach.getName());
         }

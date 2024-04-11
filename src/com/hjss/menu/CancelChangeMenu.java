@@ -7,7 +7,7 @@ public class CancelChangeMenu extends Menu {
     @Override
     protected void print() {
         System.out.println();
-        System.out.println("Select Option: ");
+        System.out.println("************** Choose Option **************");
         System.out.println("[1]: Cancel");
         System.out.println("[2]: Change");
     }

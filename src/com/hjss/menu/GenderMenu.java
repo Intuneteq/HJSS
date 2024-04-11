@@ -7,7 +7,7 @@ public class GenderMenu extends Menu{
     @Override
     protected void print() {
         System.out.println();
-        System.out.println("Select Gender: ");
+        System.out.println("************** Choose Gender **************");
         System.out.println("[1]: Male");
         System.out.println("[2]: Female");
     }
