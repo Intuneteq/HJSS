@@ -339,6 +339,68 @@ public class App {
     }
 
     private void handleChangeBooking() {
+        Booking booking = null;
+        List<Booking> bookings = bookingRepository.read(getLearner());
+
+        if (bookings.isEmpty()) {
+            System.out.println();
+            System.out.println("\u001B[32mBooking List is currently empty!\u001B[0m");
+            return;
+        }
+
+        var bookingMenu = new BookingMenu(bookings);
+
+        int bookingId = bookingMenu.execute();
+
+        booking = bookingRepository.readById(bookingId);
+
+        if (booking == null) {
+            System.out.println("\u001B[31mError: Booking Not Found!\u001B[0m");
+            return;
+        }
+
+        // Find A new Lesson
+        var bookLessonMenu = new BookLessonMenu();
+
+        int lessonId = bookLessonMenu.execute();
+
+        List<Lesson> lessons = switch (lessonId) {
+            case 1 -> handleBookByDay();
+            case 2 -> handleBookByCoach();
+            case 3 -> handleBookByGrade();
+            default -> null;
+        };
+
+        if (lessons == null) System.exit(0);
+
+        String timeTable = lessonRepository.showTimeTable(lessons);
+
+        Set<Integer> lessonIds = new HashSet<>();
+
+        for (Lesson lesson : lessons) {
+            lessonIds.add(lesson.getId());
+        }
+
+        var timeTableMenu = new TimeTableMenu(timeTable, lessonIds);
+
+        int id = timeTableMenu.execute();
+
+        Lesson lesson = lessonRepository.readById(id);
+
+        try {
+            booking = bookingRepository.change(booking, lesson);
+        } catch (BookingAttendedException | BookingCancelledException | NoVacancyException | GradeMisMatchException |
+                 DuplicateBookingException e) {
+            System.out.println("\u001B[31mError: " + e.getMessage() + "\u001B[0m");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("\u001B[32mSuccess: Your Booking was Changed successfully!\u001B[0m");
+        System.out.println();
+
+        System.out.println("Booking Itinerary: ");
+        System.out.println(booking);
     }
 
     public List<Learner> getAppLearners() {
