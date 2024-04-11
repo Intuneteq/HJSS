@@ -1,8 +1,6 @@
 package com.hjss.model;
 
-import com.hjss.observers.LessonObserver;
-
-public class Booking  {
+public class Booking {
     static int count = 0;
     private final int id;
     private final Learner learner;
@@ -17,10 +15,6 @@ public class Booking  {
         this.lesson = lesson;
         attendanceStatus = false;
         cancellationStatus = false;
-
-
-        // Register this booking as an observer with the lesson
-        lesson.addObserver((LessonObserver) this);
     }
 
     public int getId() {
@@ -44,6 +38,10 @@ public class Booking  {
     }
 
     public void setAttendanceStatus() {
+        // Reduce vacancy
+        this.getLesson().decrementBySize();
+
+        //set to true
         this.attendanceStatus = true;
     }
 
@@ -52,10 +50,14 @@ public class Booking  {
     }
 
     public void setCancellationStatus() {
+        // Increase Vacancy
+        this.getLesson().incrementBySize();
+
+        // Cancel booking
         this.cancellationStatus = true;
     }
 
     public String toString() {
-        return "Id: " + getId() + "\nLesson Id: " + getLesson().getId() + "\nBooked By: " + getLearner().getName() + "\nAttendance Status: " + getAttendanceStatus() + "Cancellation Status: " + getCancellationStatus();
+        return "Id: " + getId() + "\nLesson Id: " + getLesson().getId() + "\nBooked By: " + getLearner().getName() + "\nAttendance Status: " + getAttendanceStatus() + "\nCancellation Status: " + getCancellationStatus();
     }
 }

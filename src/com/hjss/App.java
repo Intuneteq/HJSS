@@ -4,8 +4,11 @@ import com.hjss.enums.Day;
 import com.hjss.enums.Gender;
 import com.hjss.enums.Grade;
 
+import com.hjss.exceptions.DuplicateBookingException;
+import com.hjss.exceptions.GradeMisMatchException;
 import com.hjss.exceptions.InvalidAgeException;
 
+import com.hjss.exceptions.NoVacancyException;
 import com.hjss.menu.*;
 
 import com.hjss.model.Booking;
@@ -70,16 +73,14 @@ public class App {
 
         switch (input) {
             case 1:
-                // Ensure we have the details of user prompting the application.
                 handleLogin();
 
                 handleBookASwimmingLesson();
                 break;
             case 2:
-                // Ensure we have the details of user prompting the application.
-//                setAppUser(learnerService.login());
+                handleLogin();
 //
-//                handleCancelChangeBooking();
+                handleCancelChangeBooking();
                 break;
             case 3:
                 // Ensure we have the details of user prompting the application.
@@ -223,9 +224,37 @@ public class App {
 
         Lesson lesson = lessonRepository.readById(id);
 
-        Booking booking = bookingRepository.create(new Booking(getLearner(), lesson));
+        Booking booking = null;
 
+        try {
+            booking = bookingRepository.create(new Booking(getLearner(), lesson));
+        } catch (GradeMisMatchException | DuplicateBookingException | NoVacancyException e) {
+            System.out.println();
+            System.out.println("\u001B[31mError: " + e.getMessage() + "\u001B[0m");
+            return;
+        }
 
+        System.out.println();
+        System.out.println("\u001B[32mSuccess: Your Booking was completed successfully!\u001B[0m");
+        System.out.println();
+
+        System.out.println(booking);
+    }
+
+    private void handleCancelChangeBooking() {
+        var cancelChangeMenu = new CancelChangeMenu();
+        int input = cancelChangeMenu.execute();
+
+        switch (input) {
+            case 1:
+                handleCancelBooking();
+                break;
+            case 2:
+                handleChangeBooking();
+                break;
+            default:
+                System.exit(0);
+        }
     }
 
     private List<Lesson> handleBookByDay() {
@@ -270,8 +299,8 @@ public class App {
 
         return lessonRepository.read(grade);
     }
-
-
+    private void handleCancelBooking(){}
+    private void handleChangeBooking(){}
     public List<Learner> getAppLearners() {
         return this.learnerRepository.read();
     }

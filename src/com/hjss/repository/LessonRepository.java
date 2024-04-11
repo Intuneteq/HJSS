@@ -36,7 +36,7 @@ public class LessonRepository implements Repository<Lesson, Integer> {
 
     public List<Lesson> read(Day day) {
         List<Lesson> lessons = new ArrayList<>();
-        for (Lesson ls: db) {
+        for (Lesson ls : db) {
             if (ls.getTimeSlot().day().equals(day)) {
                 lessons.add(ls);
             }
@@ -47,7 +47,7 @@ public class LessonRepository implements Repository<Lesson, Integer> {
 
     public List<Lesson> read(Grade grade) {
         List<Lesson> lessons = new ArrayList<>();
-        for (Lesson ls: db) {
+        for (Lesson ls : db) {
             if (ls.getGrade().equals(grade)) {
                 lessons.add(ls);
             }
@@ -58,7 +58,7 @@ public class LessonRepository implements Repository<Lesson, Integer> {
 
     public List<Lesson> read(Coach coach) {
         List<Lesson> lessons = new ArrayList<>();
-        for (Lesson ls: db) {
+        for (Lesson ls : db) {
             if (ls.getCoach().equals(coach)) {
                 lessons.add(ls);
             }
@@ -140,25 +140,27 @@ public class LessonRepository implements Repository<Lesson, Integer> {
     }
 
     public String showTimeTable(List<Lesson> lessons) {
-        int slash, weekCount = 1;
-
         StringBuilder s = new StringBuilder();
 
-        for (int i = 0; i < lessons.size(); i++) {
-            Lesson lesson = lessons.get(i);
+        int currentWeek = -1;
 
-            if (lesson.getTimeSlot().day() == Day.SATURDAY) {
-                slash = 2;
-            } else {
-                slash = 3;
+        for (Lesson ls : lessons) {
+            // Calculate the week number based on the lesson ID
+            // Since each week consists of 11 lessons,
+            // We divide the lesson ID by 11 and add 1 to get the week number.
+            int week = (ls.getId() - 1) / 11 + 1;
+
+            // Check if the calculated week number is different from the current week
+            if (week != currentWeek) {
+                // If it is, append the week header to the StringBuilder and update the current week number.
+                s.append("Week ").append(week).append(":\n");
+                currentWeek = week;
             }
 
-            if (i % slash == 0) {
-                // Print week header
-                s.append("== Week ").append(weekCount++).append(" ==").append("\n");
-            }
-            s.append(lesson).append("\n\n");
+            // Append the lesson details as usual.
+            s.append(ls).append("\n\n");
         }
+
         return s.toString();
     }
 }
