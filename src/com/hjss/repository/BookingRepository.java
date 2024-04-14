@@ -1,11 +1,13 @@
 package com.hjss.repository;
 
+import com.hjss.enums.Day;
+import com.hjss.enums.Gender;
 import com.hjss.enums.Grade;
+import com.hjss.enums.Time;
 import com.hjss.exceptions.*;
-import com.hjss.model.Booking;
-import com.hjss.model.Learner;
-import com.hjss.model.Lesson;
+import com.hjss.model.*;
 
+import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,21 @@ public class BookingRepository implements Repository<Booking, Integer> {
 
     @Override
     public void seed() {
+        Lesson lesson1 = new Lesson(Grade.FOUR, new TimeSlot(Day.MONDAY, Time.FOUR), new Coach("Badoo"));
+        Lesson lesson2 = new Lesson(Grade.FIVE, new TimeSlot(Day.MONDAY, Time.FOUR), new Coach("watkins"));
 
+        Learner learner1 = new Learner("seeder 1", Gender.Male, 10, "1234567890", Grade.FOUR);
+        Learner learner2 = new Learner("seeder 2", Gender.Female, 11, "1234567890", Grade.FIVE);
+
+
+        Booking booking1 = new Booking(learner1, lesson1);
+        Booking booking2 = new Booking(learner2, lesson2);
+
+        booking1.getLesson().incrementBySize();
+        booking2.getLesson().incrementBySize();
+
+        db.add(booking1);
+        db.add(booking2);
     }
 
     @Override
@@ -155,6 +171,12 @@ public class BookingRepository implements Repository<Booking, Integer> {
             throw new DuplicateBookingException();
         }
 
+        // Decrement old lesson size
+        entity.getLesson().decrementBySize();
+
+        // Increment new lesson size
+        newLesson.incrementBySize();
+
         // Change the lesson
         entity.setLesson(newLesson);
         return entity;
@@ -198,6 +220,3 @@ public class BookingRepository implements Repository<Booking, Integer> {
         return ls.getVacancy() < 1;
     }
 }
-
-// Implement an observer
-// to cancel all bookings lower than their current grade when a learner attends a lesson with a higher grade

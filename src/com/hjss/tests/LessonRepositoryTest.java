@@ -20,8 +20,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LessonRepositoryTest {
-
-    private CoachRepository coachRepository;
     private LessonRepository lessonRepository;
     private Lesson testLesson;
 
@@ -222,7 +220,7 @@ class LessonRepositoryTest {
             lessonCount.setInt("count", 0);
 
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            fail("Unexpected Error occurred when showing the timetable test " + e.getMessage());
         }
 
         Lesson lesson1 = new Lesson(Grade.ONE, new TimeSlot(Day.MONDAY, Time.FOUR), new Coach("Coach 1"));
