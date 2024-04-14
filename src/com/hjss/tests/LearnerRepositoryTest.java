@@ -57,7 +57,7 @@ class LearnerRepositoryTest {
     }
 
     @Test
-    void readById() {
+    void testReadById() {
         Learner learner = null;
         try {
             learner = learnerRepository.create(testLearner);
@@ -69,6 +69,14 @@ class LearnerRepositoryTest {
 
         assertNotNull(getLearner);
         assertEquals(learner.getName(), getLearner.getName());
+    }
+
+    @Test
+    void testReadByIdReturnNull() {
+        Learner learner = learnerRepository.readById(30);
+
+        // Return null when learner is not found
+        assertNull(learner);
     }
 
     @Test
@@ -86,6 +94,13 @@ class LearnerRepositoryTest {
 
         // Assert it was updated last
         assertEquals(newLearner, learners.getLast());
+    }
+
+    @Test
+    void testCreateThrowInvalidAgeException() {
+        Learner learner = new Learner("tester", Gender.Male, 20, "12345678", Grade.FOUR);
+
+        assertThrows(InvalidAgeException.class, () -> learnerRepository.create(learner));
     }
 
     @Test

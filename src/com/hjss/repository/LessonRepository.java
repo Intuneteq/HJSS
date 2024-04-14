@@ -87,6 +87,7 @@ public class LessonRepository implements Repository<Lesson, Integer> {
     @Override
     public void removeAll() {
         db.clear();
+        timeSlots.clear();
     }
 
     private void createTimeSlots() {

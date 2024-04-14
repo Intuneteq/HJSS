@@ -27,7 +27,7 @@ class CoachRepositoryTest {
     }
 
     @Test
-    void seed() {
+    void testSeed() {
         coachRepository.seed();
 
         List<Coach> coaches = coachRepository.read();
@@ -37,7 +37,7 @@ class CoachRepositoryTest {
     }
 
     @Test
-    void read() {
+    void testRead() {
         List<Coach> coaches = coachRepository.read();
 
         // Should return the 4 seeded coaches
@@ -51,7 +51,7 @@ class CoachRepositoryTest {
     }
 
     @Test
-    void readById() {
+    void testReadById() {
         Coach coach = coachRepository.readById(coachRepository.create(testCoach).getId());
 
         // Read coach should be the test coach
@@ -60,7 +60,7 @@ class CoachRepositoryTest {
     }
 
     @Test
-    void create() {
+    void testCreate() {
         Coach coach = coachRepository.create(testCoach);
 
         // Assert coach not null
