@@ -235,7 +235,7 @@ class LessonRepositoryTest {
                 lesson1 + "\n\n" + lesson2 + "\n\n" + lesson3 + "\n\n";
 
         String result = lessonRepository.showTimeTable(lessonRepository.read());
-        System.out.println(result);
+
         assertEquals(expectedOutput, result);
     }
 }
