@@ -273,45 +273,10 @@ public class App {
      * creates a booking for the selected lesson, and displays the booking itinerary.
      */
     private void handleBookASwimmingLesson() {
-        int input;
-        var bookLessonMenu = new BookLessonMenu();
+        // Prompt the user for the lesson to be booked
+        Lesson lesson = getLesson();
 
-        // Execute the book lesson menu to prompt the user for the booking method
-        input = bookLessonMenu.execute();
-
-        List<Lesson> lessons = switch (input) {
-            case 1 -> handleBookByDay(); // Book by day
-            case 2 -> handleBookByCoach(); // Book by coach
-            case 3 -> handleBookByGrade(); // Book by grade
-            default -> null;
-        };
-
-        // Exit if no lessons are available
-        if (lessons == null) System.exit(0);
-
-        // Display the timetable for the selected lessons
-        String timeTable = lessonRepository.showTimeTable(lessons);
-
-        // Create a set to store lesson IDs for validation
-        Set<Integer> lessonIds = new HashSet<>();
-
-        for (Lesson lesson : lessons) {
-            lessonIds.add(lesson.getId());
-        }
-
-        // Display the timetable menu for the user to select a specific lesson
-        var timeTableMenu = new TimeTableMenu(timeTable, lessonIds);
-        int id = timeTableMenu.execute();
-
-        // Retrieve the selected lesson
-        Lesson lesson = lessonRepository.readById(id);
-
-        // It should never run but just being safe!
-        if (lesson == null) {
-            System.out.println();
-            System.out.println("No Lesson Found!");
-            return;
-        }
+        if (lesson == null) return;
 
         Booking booking;
 
@@ -336,6 +301,12 @@ public class App {
         System.out.println(booking);
     }
 
+    /**
+     * Handles the process of cancelling or changing a booking.
+     * It prompts the user to select an option (cancel booking or change booking),
+     * retrieves the booking or lesson based on the user's selection,
+     * performs the canceling or changing operation, and displays the result.
+     */
     private void handleCancelChangeBooking() {
         var cancelChangeMenu = new CancelChangeMenu();
         int input = cancelChangeMenu.execute();
@@ -352,14 +323,23 @@ public class App {
         }
     }
 
+    /**
+     * Handles the process of attending a swimming lesson.
+     * It prompts the user to select a booking, marks the booking as attended,
+     * allows the user to provide a review, and creates the review in the repository.
+     */
     private void handleAttendSwimmingLesson() {
+        // Retrieve booking for attendance
         Booking booking = getBooking();
 
+        // End process when no booking found
         if (booking == null) return;
 
         try {
+            // Mark the booking as attended
             booking = bookingRepository.attend(booking);
         } catch (BookingCancelledException | GradeMisMatchException e) {
+            // Handle exception cases
             System.out.println();
             System.out.println("\u001B[31mError: " + e.getMessage() + "\u001B[0m");
             return;
@@ -406,13 +386,13 @@ public class App {
     }
 
     /**
-     * Handles the printing of the learners' report for the month at Hatfield Junior Swimming School.
-     * This report includes detailed information about each learner's bookings,
-     * cancellations, and attendance for the month.
+     * Displays a report for Hatfield Junior Swimming School learners for the month.
+     * Retrieves information about learners, their bookings, cancellations, and attendances,
+     * and prints out relevant statistics and details.
      */
     private void handleShowLearnerReport() {
         System.out.println();
-        System.out.println("Report For Hatfield Junior Swimming School Learners For The Month");
+        System.out.println("****** Report For Hatfield Junior Swimming School Learners For The Month ******");
 
 
         // Get all Learners
@@ -422,12 +402,16 @@ public class App {
             System.out.println();
             // Get Learner bookings, cancelled bookings, and attended bookings
             List<Booking> bookings = bookingRepository.read(lr);
-
             List<Booking> canceledBookings = bookingRepository.read(lr, "cancelled");
             List<Booking> attendedBookings = bookingRepository.read(lr, "attended");
 
+            String stats = lr.toString() +
+                    "\nTotal Booking: " + bookings.size() +
+                    "\nTotal Attendance: " + attendedBookings.size() +
+                    "\nTotal Cancellations: " + canceledBookings.size();
+
             // Print student information and statistics
-            System.out.println(lr + "\nTotal Booking: " + bookings.size() + "\nTotal Attendance: " + attendedBookings.size() + "\nTotal Cancellations: " + canceledBookings.size());
+            System.out.println(stats);
 
             // Print lessons booked by the learner
             System.out.println();
@@ -446,29 +430,46 @@ public class App {
         }
     }
 
+    /**
+     * Displays a report for coaches at Hatfield Junior Swimming School, including their names
+     * and average ratings based on reviews.
+     */
     private void handleShowCoachReport() {
         System.out.println();
-        // Print each coach name,and average rating
+
+        // Retrieve all coaches
         List<Coach> coaches = getAppCoaches();
 
-
+        // Print header for the coaches review section
         System.out.println("************** Coaches Review **************");
         System.out.println("----------------------------------------");
         for (Coach coach : coaches) {
+            // Retrieve reviews for the coach
             List<Review> reviews = reviewRepository.read(coach);
 
+            // Calculate the average rating for the coach
             float avgRating = reviewRepository.getAvgRating(reviews);
+
+            // Print coach name and average rating
             System.out.printf("| Name: %-7s | Average Rating: %.2f | %n", coach.getName(), avgRating);
 
             System.out.println("----------------------------------------");
         }
     }
 
+    /**
+     * Handles the process of booking swimming lessons by day.
+     * It prompts the user to select a day, retrieves lessons available on that day,
+     * and returns the list of lessons.
+     *
+     * @return The list of lessons available on the selected day.
+     */
     private List<Lesson> handleBookByDay() {
+        // Prompt user to select a day
         var dayMenu = new DayMenu();
-
         int input = dayMenu.execute();
 
+        // Map user input to the corresponding day
         Day day = switch (input) {
             case 1 -> Day.MONDAY;
             case 2 -> Day.WEDNESDAY;
@@ -477,24 +478,43 @@ public class App {
             default -> null;
         };
 
+        // Retrieve lessons available on the selected day
         return lessonRepository.read(day);
     }
 
+    /**
+     * Handles the process of booking swimming lessons by coach.
+     * It prompts the user to select a coach, retrieves lessons coached by that coach,
+     * and returns the list of lessons.
+     *
+     * @return The list of lessons coached by the selected coach.
+     */
     private List<Lesson> handleBookByCoach() {
+        // Prompt user to select a coach
         var coachMenu = new CoachMenu();
 
         int id = coachMenu.execute();
 
         Coach coach = coachRepository.readById(id);
 
+        // Retrieve lessons coached by the selected coach
         return lessonRepository.read(coach);
     }
 
+    /**
+     * Handles the process of booking swimming lessons by grade.
+     * It prompts the user to select a grade, retrieves lessons available for that grade,
+     * and returns the list of lessons.
+     *
+     * @return The list of lessons available for the selected grade.
+     */
     private List<Lesson> handleBookByGrade() {
+        // Prompt user to select a grade
         var gradeMenu = new GradeMenu();
 
         int input = gradeMenu.execute();
 
+        // Map user input to the corresponding grade
         Grade grade = switch (input) {
             case 1 -> Grade.ONE;
             case 2 -> Grade.TWO;
@@ -504,21 +524,33 @@ public class App {
             default -> null;
         };
 
+        // Retrieve lessons available for the selected grade
         return lessonRepository.read(grade);
     }
 
+    /**
+     * Handles the process of cancelling a booking.
+     * It retrieves the booking to be cancelled,
+     * performs the cancelling operation, and displays the result.
+     */
     private void handleCancelBooking() {
+        // Get the active user booking to be cancelled.
         Booking booking = getBooking();
 
+        // End process when no booking is returned.
         if (booking == null) return;
 
         try {
+            // Attempt to cancel the booking
             booking = bookingRepository.cancel(booking);
         } catch (BookingAttendedException e) {
+
+            // Handle exception cases.
             System.out.println("\u001B[31mError: " + e.getMessage() + "\u001B[0m");
             return;
         }
 
+        // Display a success message and booking itinerary
         System.out.println();
         System.out.println("\u001B[32mSuccess: Your Booking was Cancelled successfully!\u001B[0m");
         System.out.println();
@@ -527,43 +559,30 @@ public class App {
         System.out.println(booking);
     }
 
+    /**
+     * Handles the process of changing a booking.
+     * It retrieves the booking and the new lesson for the change,
+     * performs the changing operation, and displays the result.
+     */
     private void handleChangeBooking() {
+        // Prompt the user for the booking to be changed
         Booking booking = getBooking();
 
+        // End process when no booking is returned.
         if (booking == null) return;
 
-        // Find A new Lesson
-        var bookLessonMenu = new BookLessonMenu();
+        // Prompt the user for the new lesson
+        Lesson lesson = getLesson();
 
-        int lessonId = bookLessonMenu.execute();
-
-        List<Lesson> lessons = switch (lessonId) {
-            case 1 -> handleBookByDay();
-            case 2 -> handleBookByCoach();
-            case 3 -> handleBookByGrade();
-            default -> null;
-        };
-
-        if (lessons == null) System.exit(0);
-
-        String timeTable = lessonRepository.showTimeTable(lessons);
-
-        Set<Integer> lessonIds = new HashSet<>();
-
-        for (Lesson lesson : lessons) {
-            lessonIds.add(lesson.getId());
-        }
-
-        var timeTableMenu = new TimeTableMenu(timeTable, lessonIds);
-
-        int id = timeTableMenu.execute();
-
-        Lesson lesson = lessonRepository.readById(id);
+        // End process when no lesson is returned.
+        if (lesson == null) return;
 
         try {
+            // Attempt to change the booking
             booking = bookingRepository.change(booking, lesson);
         } catch (BookingAttendedException | BookingCancelledException | NoVacancyException | GradeMisMatchException |
                  DuplicateBookingException e) {
+            // Handle exception cases.
             System.out.println("\u001B[31mError: " + e.getMessage() + "\u001B[0m");
             return;
         }
@@ -672,20 +691,34 @@ public class App {
         return name;
     }
 
+    /**
+     * Retrieves the booking selected by the user.
+     * If no bookings are available, it displays a message and returns null.
+     * If a booking is selected, it returns the booking.
+     *
+     * @return The selected booking or null if no bookings are available.
+     */
     private Booking getBooking() {
+        // Read all user bookings
         List<Booking> bookings = bookingRepository.read(getLearner());
 
+        // Display message and Return when no booking is found.
         if (bookings.isEmpty()) {
             System.out.println();
             System.out.println("\u001B[32mBooking List is currently empty!\u001B[0m");
             return null;
         }
+
+        // Instantiate the booking menu
         var bookingMenu = new BookingMenu(bookings);
 
+        // Display the bookings to the user and retrieve the user's choice id.
         int bookingId = bookingMenu.execute();
 
+        // Retrieve the booking by its id.
         Booking booking = bookingRepository.readById(bookingId);
 
+        // Display message and Return when this booking is not found.
         if (booking == null) {
             System.out.println("\u001B[31mError: Booking Not Found!\u001B[0m");
             return null;
@@ -694,22 +727,99 @@ public class App {
         return booking;
     }
 
+    /**
+     * Retrieves the lesson selected by the user.
+     * If no lessons are available, it exits the application.
+     * If a lesson is selected, it returns the lesson.
+     *
+     * @return The selected lesson or null if no lessons are available.
+     */
+    private Lesson getLesson() {
+        int input;
+        var bookLessonMenu = new BookLessonMenu();
+
+        // Execute the book lesson menu to prompt the user for the booking method
+        input = bookLessonMenu.execute();
+
+        List<Lesson> lessons = switch (input) {
+            case 1 -> handleBookByDay(); // Book by day
+            case 2 -> handleBookByCoach(); // Book by coach
+            case 3 -> handleBookByGrade(); // Book by grade
+            default -> null;
+        };
+
+        // Exit if no lessons are available
+        if (lessons == null) System.exit(0);
+
+        // Display the timetable for the selected lessons
+        String timeTable = lessonRepository.showTimeTable(lessons);
+
+        // Create a set to store lesson IDs for validation
+        Set<Integer> lessonIds = new HashSet<>();
+
+        for (Lesson lesson : lessons) {
+            lessonIds.add(lesson.getId());
+        }
+
+        // Display the timetable menu for the user to select a specific lesson
+        var timeTableMenu = new TimeTableMenu(timeTable, lessonIds);
+        int id = timeTableMenu.execute();
+
+        // Retrieve the selected lesson
+        Lesson lesson = lessonRepository.readById(id);
+
+        // It should never run but just being safe!
+        if (lesson == null) {
+            System.out.println();
+            System.out.println("No Lesson Found!");
+            return null;
+        }
+
+        return lesson;
+    }
+
+    /**
+     * Retrieves a list of learners registered in the application.
+     *
+     * @return A list of learners.
+     */
     public List<Learner> getAppLearners() {
         return this.learnerRepository.read();
     }
 
+    /**
+     * Retrieves a list of coaches registered in the application.
+     *
+     * @return A list of coaches.
+     */
     public List<Coach> getAppCoaches() {
         return coachRepository.read();
     }
 
+    /**
+     * Retrieves the currently logged-in learner.
+     *
+     * @return The logged-in learner.
+     */
     public Learner getLearner() {
         return learner;
     }
 
+    /**
+     * Sets the currently logged-in learner.
+     *
+     * @param learner The learner to set as logged-in.
+     */
     public void setLearner(Learner learner) {
         this.learner = learner;
     }
 
+    /**
+     * Formats a double number into a string padded with zeros to ensure two digits.
+     *
+     * @param number The number to format.
+     * @return The formatted string.
+     */
     public static String padToTwoDigits(double number) {
         DecimalFormat df = new DecimalFormat("00");
         return df.format(number);
