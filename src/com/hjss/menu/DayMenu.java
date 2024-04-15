@@ -7,7 +7,7 @@ public class DayMenu extends Menu{
     @Override
     protected void print() {
         System.out.println();
-        System.out.println("************** Book By Day **************");
+        System.out.println("************** Choose Day **************");
         System.out.println("[1]: Monday");
         System.out.println("[2]: Wednesday");
         System.out.println("[3]: Friday");

@@ -30,7 +30,7 @@ public class CoachMenu extends Menu {
     @Override
     protected void print() {
         System.out.println();
-        System.out.println("************** Book By Coach **************");
+        System.out.println("************** Choose Coach **************");
         for (Coach coach : coaches) {
             System.out.println("[" + padToTwoDigits(coach.getId()) + "]: " + coach.getName());
         }

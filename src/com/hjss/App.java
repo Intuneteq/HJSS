@@ -1,10 +1,7 @@
 package com.hjss;
 
-import com.hjss.enums.Day;
-import com.hjss.enums.Gender;
-import com.hjss.enums.Grade;
+import com.hjss.enums.*;
 
-import com.hjss.enums.Rating;
 import com.hjss.exceptions.*;
 
 import com.hjss.menu.*;
@@ -16,17 +13,63 @@ import com.hjss.repository.*;
 import java.text.DecimalFormat;
 import java.util.*;
 
+/**
+ * The App class represents the main application instance.
+ * It follows the singleton design pattern to ensure that only one instance of the application is created.
+ *
+ * <p>
+ * This class is designed to be open for expansion. In case of a franchise or multiple instances of the application running concurrently,
+ * more instances of the App class can be created and run in the main class. Each instance can have its own state and manage its own set of data
+ * independently from other instances, providing a scalable solution for managing multiple instances of the application.
+ * </p>
+ */
 public class App {
+    /**
+     * Application instance,
+     * following the singleton design pattern to ensure only one instance of the application is created.
+     */
     private static App app;
+
+    /**
+     * The name of the application.
+     */
     private final String name;
+
+    /**
+     * Repository for managing operations related to learners.
+     */
     private final LearnerRepository learnerRepository;
+
+    /**
+     * Repository for managing operations related to coaches.
+     */
     private final CoachRepository coachRepository;
+
+    /**
+     * Repository for managing operations related to lessons.
+     */
     private final LessonRepository lessonRepository;
+
+    /**
+     * Repository for managing operations related to bookings.
+     */
     private final BookingRepository bookingRepository;
+
+    /**
+     * Repository for managing operations related to reviews.
+     */
     private final ReviewRepository reviewRepository;
 
+    /**
+     * The learner currently interacting with the application.
+     */
     private Learner learner;
 
+
+    /**
+     * Private constructor to prevent direct instantiation.
+     * Initializes the name and all repository instances required by the application.
+     */
     private App() {
         name = "Hatfield Junior Swimming School";
         learnerRepository = new LearnerRepository();
@@ -36,6 +79,12 @@ public class App {
         reviewRepository = new ReviewRepository();
     }
 
+    /**
+     * Returns the singleton instance of the App class.
+     * If the instance doesn't exist, it creates one.
+     *
+     * @return The singleton instance of the App class.
+     */
     public static App getInstance() {
         if (app == null) {
             app = new App();
@@ -43,16 +92,31 @@ public class App {
         return app;
     }
 
+    /**
+     * Starts the application by displaying a welcome message and initiating the main menu loop.
+     * The main menu loop continues running until the user manually terminates the application.
+     */
     public void start() {
+        // Display welcome message
         welcome();
 
+        // Initiate the main menu loop
         do run(); while (true);
     }
 
+    /**
+     * Retrieves the name of the application.
+     *
+     * @return The name of the application.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Displays a welcome message upon starting the application.
+     * The welcome message includes the name of the application.
+     */
     private void welcome() {
         System.out.println(" ");
         System.out.println("==================================================================");
@@ -60,40 +124,68 @@ public class App {
         System.out.println("==================================================================");
     }
 
+    /**
+     * Runs the main menu functionality of the application.
+     * It displays the main menu, executes the selected menu option, and handles the corresponding actions.
+     */
     private void run() {
+        // Create a new instance of the main menu
         var mainMenu = new MainMenu();
 
+        // Execute the main menu and retrieve user input
         int input = mainMenu.execute();
 
+        // Branch based on the user input
         switch (input) {
+            // Case 1: Book a swimming lesson
             case 1:
+                // Handle user login
                 handleLogin();
-
+                // Proceed to book a swimming lesson
                 handleBookASwimmingLesson();
                 break;
-            case 2:
-                handleLogin();
 
+            // Case 2: Cancel or change a booking
+            case 2:
+                // Handle user login
+                handleLogin();
+                // Proceed to cancel or change a booking
                 handleCancelChangeBooking();
                 break;
-            case 3:
-                handleLogin();
 
+            // Case 3: Attend a swimming lesson
+            case 3:
+                // Handle user login
+                handleLogin();
+                // Proceed to attend a swimming lesson
                 handleAttendSwimmingLesson();
                 break;
+
+            // Case 4: Show monthly learners reports
             case 4:
+                // Display the learner report
                 handleShowLearnerReport();
                 break;
+
+            // Case 5: Show monthly coaches reports
             case 5:
+                // Display the coach report
                 handleShowCoachReport();
                 break;
+
+            // Case 6: Register a new learner
             case 6:
+                // Proceed to handle registration
                 handleRegistration();
                 break;
+
+            // Default: Exit the application
             default:
+                // Terminate the application
                 System.exit(0);
         }
     }
+
 
     private void handleRegistration() {
         System.out.println();

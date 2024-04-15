@@ -7,7 +7,7 @@ public class GradeMenu extends Menu{
     @Override
     protected void print() {
         System.out.println();
-        System.out.println("************** Book By Grade **************");
+        System.out.println("************** Choose Grade **************");
         System.out.println("[1]: One");
         System.out.println("[2]: Two");
         System.out.println("[3]: Three");
