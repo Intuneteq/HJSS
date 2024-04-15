@@ -10,6 +10,11 @@ import com.hjss.model.TimeSlot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The LessonRepository class manages the persistence of lesson data in the Hatfield Junior Swimming School
+ * (HJSS) application.
+ * It implements the Repository interface for CRUD operations on lessons.
+ */
 public class LessonRepository implements Repository<Lesson, Integer> {
     private final List<Lesson> db = new ArrayList<>();
 
@@ -17,11 +22,19 @@ public class LessonRepository implements Repository<Lesson, Integer> {
 
     private final CoachRepository coachRepository;
 
+    /**
+     * Initializes the LessonRepository with a reference to the CoachRepository and seeds it with initial lesson data.
+     *
+     * @param coachRepository The CoachRepository instance to be used for retrieving coaches.
+     */
     public LessonRepository(CoachRepository coachRepository) {
         this.coachRepository = coachRepository;
         seed();
     }
 
+    /**
+     * Seeds the repository with initial lesson data.
+     */
     @Override
     public void seed() {
         createTimeSlots();
@@ -29,11 +42,22 @@ public class LessonRepository implements Repository<Lesson, Integer> {
         createLessons();
     }
 
+    /**
+     * Retrieves all lessons from the repository.
+     *
+     * @return A list of all lessons stored in the repository.
+     */
     @Override
     public List<Lesson> read() {
         return db;
     }
 
+    /**
+     * Retrieves lessons scheduled for a specific day.
+     *
+     * @param day The day for which lessons are to be retrieved.
+     * @return A list of lessons scheduled for the specified day.
+     */
     public List<Lesson> read(Day day) {
         List<Lesson> lessons = new ArrayList<>();
         for (Lesson ls : db) {
@@ -45,6 +69,12 @@ public class LessonRepository implements Repository<Lesson, Integer> {
         return lessons;
     }
 
+    /**
+     * Retrieves lessons for a specific grade.
+     *
+     * @param grade The grade for which lessons are to be retrieved.
+     * @return A list of lessons scheduled for the specified grade.
+     */
     public List<Lesson> read(Grade grade) {
         List<Lesson> lessons = new ArrayList<>();
         for (Lesson ls : db) {
@@ -56,6 +86,12 @@ public class LessonRepository implements Repository<Lesson, Integer> {
         return lessons;
     }
 
+    /**
+     * Retrieves lessons coached by a specific coach.
+     *
+     * @param coach The coach for which lessons are to be retrieved.
+     * @return A list of lessons coached by the specified coach.
+     */
     public List<Lesson> read(Coach coach) {
         List<Lesson> lessons = new ArrayList<>();
         for (Lesson ls : db) {
@@ -67,6 +103,12 @@ public class LessonRepository implements Repository<Lesson, Integer> {
         return lessons;
     }
 
+    /**
+     * Retrieves a lesson by its unique identifier from the repository.
+     *
+     * @param id The unique identifier of the lesson.
+     * @return The lesson corresponding to the given identifier, or null if not found.
+     */
     @Override
     public Lesson readById(Integer id) {
         for (Lesson ls : db) {
@@ -77,6 +119,12 @@ public class LessonRepository implements Repository<Lesson, Integer> {
         return null;
     }
 
+    /**
+     * Creates a new lesson in the repository.
+     *
+     * @param entity The lesson to create.
+     * @return The created lesson.
+     */
     @Override
     public Lesson create(Lesson entity) {
         db.add(entity);
@@ -84,12 +132,18 @@ public class LessonRepository implements Repository<Lesson, Integer> {
         return entity;
     }
 
+    /**
+     * Removes all lessons from the repository.
+     */
     @Override
     public void removeAll() {
         db.clear();
         timeSlots.clear();
     }
 
+    /**
+     * Creates time slots for each day and time combination.
+     */
     private void createTimeSlots() {
         Day[] days = Day.values();
         Time[] lessonTime = Time.values();
@@ -108,7 +162,8 @@ public class LessonRepository implements Repository<Lesson, Integer> {
     }
 
     /**
-     * Create 44 Lessons and add them to the lesson list.
+     * Creates lessons based on available time slots and coaches.
+     * 44 Lessons are created and added to the lesson list.
      */
     private void createLessons() {
         // Get application coaches
@@ -145,6 +200,12 @@ public class LessonRepository implements Repository<Lesson, Integer> {
 
     }
 
+    /**
+     * Generates a formatted timetable string based on the provided list of lessons.
+     *
+     * @param lessons The list of lessons to generate the timetable from.
+     * @return The formatted timetable string.
+     */
     public String showTimeTable(List<Lesson> lessons) {
         StringBuilder s = new StringBuilder();
 

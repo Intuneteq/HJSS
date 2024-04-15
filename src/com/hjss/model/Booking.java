@@ -2,6 +2,7 @@ package com.hjss.model;
 
 /**
  * The Booking class represents a booking made by a learner for a swimming lesson.
+ * It serves as a mediator between lessons and learners.
  * It includes information such as the booking ID, learner, lesson, attendance status, and cancellation status.
  */
 public class Booking {

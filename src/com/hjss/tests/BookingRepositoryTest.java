@@ -423,12 +423,12 @@ class BookingRepositoryTest {
             // Create a lesson
             Lesson falseLesson = new Lesson(Grade.THREE, new TimeSlot(Day.MONDAY, Time.FOUR), new Coach("Watkins"));
 
-            Method validateGradeMatchMethod = BookingRepository.class.getDeclaredMethod("validateGradeMatch", Booking.class);
-            validateGradeMatchMethod.setAccessible(true);
+            Method inValidGradeMatch = BookingRepository.class.getDeclaredMethod("inValidGradeMatch", Booking.class);
+            inValidGradeMatch.setAccessible(true);
 
             // Invoke the private method with a test booking
-            boolean isValid = (boolean) validateGradeMatchMethod.invoke(bookingRepository, testBooking1);
-            boolean isInValid = (boolean) validateGradeMatchMethod.invoke(bookingRepository, new Booking(falseLearner, falseLesson));
+            boolean isValid = (boolean) inValidGradeMatch.invoke(bookingRepository, testBooking1);
+            boolean isInValid = (boolean) inValidGradeMatch.invoke(bookingRepository, new Booking(falseLearner, falseLesson));
 
             // Assert the results
             assertTrue(isInValid); // Method will return a true if it is inValid
@@ -450,17 +450,17 @@ class BookingRepositoryTest {
 
             Lesson newLesson = new Lesson(Grade.FOUR, new TimeSlot(Day.MONDAY, Time.FOUR), new Coach("Watkins"));
 
-            Method validateGradeMatchMethod = BookingRepository.class.getDeclaredMethod("validateGradeMatch", Booking.class, Lesson.class);
-            validateGradeMatchMethod.setAccessible(true);
+            Method inValidGradeMatch = BookingRepository.class.getDeclaredMethod("inValidGradeMatch", Booking.class, Lesson.class);
+            inValidGradeMatch.setAccessible(true);
 
             // Invoke the private method with a test booking
-            boolean isValid = (boolean) validateGradeMatchMethod.invoke(bookingRepository, testBooking1, newLesson);
+            boolean isValid = (boolean) inValidGradeMatch.invoke(bookingRepository, testBooking1, newLesson);
 
-            boolean isInValid = (boolean) validateGradeMatchMethod.invoke(bookingRepository, new Booking(falseLearner, falseLesson), newLesson);
+            boolean isInValid = (boolean) inValidGradeMatch.invoke(bookingRepository, new Booking(falseLearner, falseLesson), newLesson);
 
             // Assert the results
-            assertFalse(isInValid); // Method will return a false if it is inValid
-            assertTrue(isValid); // Method will return a true if it is valid
+            assertTrue(isInValid); // Method will return a true if it is inValid
+            assertFalse(isValid); // Method will return a false if it is valid
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail("Unexpected Error occurred when invoking validateGradeMatch method: " + e.getMessage());
         }
