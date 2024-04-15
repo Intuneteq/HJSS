@@ -189,7 +189,10 @@ public class App {
         }
     }
 
-
+    /**
+     * Handles the registration process for a new learner.
+     * It prompts the user for necessary learner information and registers the learner.
+     */
     private void handleRegistration() {
         System.out.println();
         System.out.println("************** Register A New Learner **************");
@@ -204,17 +207,23 @@ public class App {
 
         boolean isValidAge = false;
 
+        // Get the user's name
         name = promptName();
 
+        // Get the user's contact number
         contactNumber = promptContactNumber();
 
+        // Get the user's age - Validate the age also.
         age = getAge(age, isValidAge);
 
+        // Get the user's gender
         gender = getGender();
 
+        // Get the user's grade
         grade = getGrade();
 
         try {
+            // Create the new learner and add to the list of the application learners.
             Learner learner = learnerRepository.create(new Learner(name, gender, age, contactNumber, grade));
 
             System.out.println();
@@ -227,74 +236,11 @@ public class App {
         }
     }
 
-    private static Grade getGrade() {
-        Grade grade;
-        int input;
-        var gradeMenu = new GradeMenu();
-        input = gradeMenu.execute();
-
-        grade = switch (input) {
-            case 1 -> Grade.ONE;
-            case 2 -> Grade.TWO;
-            case 3 -> Grade.THREE;
-            case 4 -> Grade.FOUR;
-            case 5 -> Grade.FIVE;
-            default -> null;
-        };
-        return grade;
-    }
-
-    private static Gender getGender() {
-        Gender gender;
-        int input;
-        var genderMenu = new GenderMenu();
-        input = genderMenu.execute();
-
-        gender = switch (input) {
-            case 1 -> Gender.Male;
-            case 2 -> Gender.Female;
-            default -> null;
-        };
-        return gender;
-    }
-
-    private int getAge(int age, boolean isValidAge) {
-        do {
-            try {
-                System.out.print("Enter Age: ");
-                age = console.nextInt();
-
-                if (!learnerRepository.isValidAge(age)) {
-                    throw new InvalidAgeException();
-                }
-
-                isValidAge = true; // Set isValidAge to true if no exception is thrown
-            } catch (InputMismatchException e) {
-                System.out.println("\u001B[31mError: Please enter a valid age.\u001B[0m");
-                console.nextLine(); // Clear the buffer
-            } catch (InvalidAgeException e) {
-                System.out.println("\u001B[31m" + e.getMessage() + "\u001B[0m");
-                console.nextLine(); // Clear the buffer
-            }
-        } while (!isValidAge);
-
-        return age;
-    }
-
-    private String promptContactNumber() {
-        String contactNumber;
-        System.out.print("Enter Emergency Contact Number: ");
-        contactNumber = console.nextLine();
-        return contactNumber;
-    }
-
-    private String promptName() {
-        String name;
-        System.out.print("Enter Name: ");
-        name = console.nextLine();
-        return name;
-    }
-
+    /**
+     * Handles the login process for a learner.
+     * It prompts the user to select a learner from the list of available learners,
+     * sets the selected learner as the active learner, and displays a confirmation message.
+     */
     private void handleLogin() {
         var selectMenu = new SelectLearnerMenu();
 
@@ -319,38 +265,58 @@ public class App {
         System.out.println(learner);
     }
 
+    /**
+     * Handles the process of booking a swimming lesson.
+     * It prompts the user to select a booking method (by day, by coach, or by grade),
+     * displays the available lessons based on the selected method,
+     * prompts the user to choose a lesson from the displayed list,
+     * creates a booking for the selected lesson, and displays the booking itinerary.
+     */
     private void handleBookASwimmingLesson() {
         int input;
         var bookLessonMenu = new BookLessonMenu();
 
+        // Execute the book lesson menu to prompt the user for the booking method
         input = bookLessonMenu.execute();
 
         List<Lesson> lessons = switch (input) {
-            case 1 -> handleBookByDay();
-            case 2 -> handleBookByCoach();
-            case 3 -> handleBookByGrade();
+            case 1 -> handleBookByDay(); // Book by day
+            case 2 -> handleBookByCoach(); // Book by coach
+            case 3 -> handleBookByGrade(); // Book by grade
             default -> null;
         };
 
+        // Exit if no lessons are available
         if (lessons == null) System.exit(0);
 
+        // Display the timetable for the selected lessons
         String timeTable = lessonRepository.showTimeTable(lessons);
 
+        // Create a set to store lesson IDs for validation
         Set<Integer> lessonIds = new HashSet<>();
 
         for (Lesson lesson : lessons) {
             lessonIds.add(lesson.getId());
         }
 
+        // Display the timetable menu for the user to select a specific lesson
         var timeTableMenu = new TimeTableMenu(timeTable, lessonIds);
-
         int id = timeTableMenu.execute();
 
+        // Retrieve the selected lesson
         Lesson lesson = lessonRepository.readById(id);
 
-        Booking booking = null;
+        // It should never run but just being safe!
+        if (lesson == null) {
+            System.out.println();
+            System.out.println("No Lesson Found!");
+            return;
+        }
+
+        Booking booking;
 
         try {
+            // Create a booking for the selected lesson
             booking = bookingRepository.create(new Booking(getLearner(), lesson));
         } catch (GradeMisMatchException | DuplicateBookingException | NoVacancyException e) {
             System.out.println();
@@ -361,6 +327,7 @@ public class App {
             return;
         }
 
+        // Display a success message and the booking itinerary
         System.out.println();
         System.out.println("\u001B[32mSuccess: Your Booking was completed successfully!\u001B[0m");
         System.out.println();
@@ -655,6 +622,102 @@ public class App {
 
         System.out.println("Booking Itinerary: ");
         System.out.println(booking);
+    }
+
+    /**
+     * Retrieves the grade selected by the user from the grade menu.
+     *
+     * @return The selected grade.
+     */
+    private static Grade getGrade() {
+        Grade grade;
+        int input;
+        var gradeMenu = new GradeMenu();
+        input = gradeMenu.execute();
+
+        grade = switch (input) {
+            case 1 -> Grade.ONE;
+            case 2 -> Grade.TWO;
+            case 3 -> Grade.THREE;
+            case 4 -> Grade.FOUR;
+            case 5 -> Grade.FIVE;
+            default -> null;
+        };
+
+        return grade;
+    }
+
+    /**
+     * Retrieves the gender selected by the user from the gender menu.
+     *
+     * @return The selected gender.
+     */
+    private static Gender getGender() {
+        Gender gender;
+        int input;
+        var genderMenu = new GenderMenu();
+        input = genderMenu.execute();
+
+        gender = switch (input) {
+            case 1 -> Gender.Male;
+            case 2 -> Gender.Female;
+            default -> null;
+        };
+        return gender;
+    }
+
+    /**
+     * Prompts the user to enter an age until a valid age is provided.
+     *
+     * @param age        The age entered by the user.
+     * @param isValidAge Flag indicating whether the entered age is valid.
+     * @return The validated age.
+     */
+    private int getAge(int age, boolean isValidAge) {
+        do {
+            try {
+                System.out.print("Enter Age: ");
+                age = console.nextInt();
+
+                if (!learnerRepository.isValidAge(age)) {
+                    throw new InvalidAgeException();
+                }
+
+                isValidAge = true; // Set isValidAge to true if no exception is thrown
+            } catch (InputMismatchException e) {
+                System.out.println("\u001B[31mError: Please enter a valid age.\u001B[0m");
+                console.nextLine(); // Clear the buffer
+            } catch (InvalidAgeException e) {
+                System.out.println("\u001B[31m" + e.getMessage() + "\u001B[0m");
+                console.nextLine(); // Clear the buffer
+            }
+        } while (!isValidAge);
+
+        return age;
+    }
+
+    /**
+     * Prompts the user to enter a contact number.
+     *
+     * @return The entered contact number.
+     */
+    private String promptContactNumber() {
+        String contactNumber;
+        System.out.print("Enter Emergency Contact Number: ");
+        contactNumber = console.nextLine();
+        return contactNumber;
+    }
+
+    /**
+     * Prompts the user to enter a name.
+     *
+     * @return The entered name.
+     */
+    private String promptName() {
+        String name;
+        System.out.print("Enter Name: ");
+        name = console.nextLine();
+        return name;
     }
 
     public List<Learner> getAppLearners() {
