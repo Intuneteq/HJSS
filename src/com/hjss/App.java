@@ -65,6 +65,8 @@ public class App {
      */
     private Learner learner;
 
+    private final Scanner console;
+
 
     /**
      * Private constructor to prevent direct instantiation.
@@ -77,6 +79,7 @@ public class App {
         lessonRepository = new LessonRepository(coachRepository);
         bookingRepository = new BookingRepository();
         reviewRepository = new ReviewRepository();
+        console = new Scanner(System.in);
     }
 
     /**
@@ -191,22 +194,71 @@ public class App {
         System.out.println();
         System.out.println("************** Register A New Learner **************");
 
-        Scanner console = new Scanner(System.in);
         String name;
-        int age = 0;
-        Gender gender;
-        Grade grade;
         String contactNumber;
-        int input;
+
+        int age = 0;
+
+        Grade grade;
+        Gender gender;
 
         boolean isValidAge = false;
 
-        System.out.print("Enter Name: ");
-        name = console.nextLine();
+        name = promptName();
 
-        System.out.print("Enter Emergency Contact Number: ");
-        contactNumber = console.nextLine();
+        contactNumber = promptContactNumber();
 
+        age = getAge(age, isValidAge);
+
+        gender = getGender();
+
+        grade = getGrade();
+
+        try {
+            Learner learner = learnerRepository.create(new Learner(name, gender, age, contactNumber, grade));
+
+            System.out.println();
+            System.out.println("\u001B[32mSuccess: Your Registration was completed successfully!\u001B[0m");
+            System.out.println();
+
+            System.out.println(learner);
+        } catch (InvalidAgeException e) {
+            System.out.println("\u001B[31m" + e.getMessage() + "\u001B[0m");
+        }
+    }
+
+    private static Grade getGrade() {
+        Grade grade;
+        int input;
+        var gradeMenu = new GradeMenu();
+        input = gradeMenu.execute();
+
+        grade = switch (input) {
+            case 1 -> Grade.ONE;
+            case 2 -> Grade.TWO;
+            case 3 -> Grade.THREE;
+            case 4 -> Grade.FOUR;
+            case 5 -> Grade.FIVE;
+            default -> null;
+        };
+        return grade;
+    }
+
+    private static Gender getGender() {
+        Gender gender;
+        int input;
+        var genderMenu = new GenderMenu();
+        input = genderMenu.execute();
+
+        gender = switch (input) {
+            case 1 -> Gender.Male;
+            case 2 -> Gender.Female;
+            default -> null;
+        };
+        return gender;
+    }
+
+    private int getAge(int age, boolean isValidAge) {
         do {
             try {
                 System.out.print("Enter Age: ");
@@ -226,41 +278,21 @@ public class App {
             }
         } while (!isValidAge);
 
-        var genderMenu = new GenderMenu();
-        input = genderMenu.execute();
+        return age;
+    }
 
-        gender = switch (input) {
-            case 1 -> Gender.Male;
-            case 2 -> Gender.Female;
-            default -> null;
-        };
+    private String promptContactNumber() {
+        String contactNumber;
+        System.out.print("Enter Emergency Contact Number: ");
+        contactNumber = console.nextLine();
+        return contactNumber;
+    }
 
-        var gradeMenu = new GradeMenu();
-        input = gradeMenu.execute();
-
-        grade = switch (input) {
-            case 1 -> Grade.ONE;
-            case 2 -> Grade.TWO;
-            case 3 -> Grade.THREE;
-            case 4 -> Grade.FOUR;
-            case 5 -> Grade.FIVE;
-            default -> null;
-        };
-
-
-        Learner learner = null;
-        try {
-            learner = learnerRepository.create(new Learner(name, gender, age, contactNumber, grade));
-        } catch (InvalidAgeException e) {
-            System.out.println("\u001B[31m" + e.getMessage() + "\u001B[0m");
-            return;
-        }
-
-        System.out.println();
-        System.out.println("\u001B[32mSuccess: Your Registration was completed successfully!\u001B[0m");
-        System.out.println();
-
-        System.out.println(learner);
+    private String promptName() {
+        String name;
+        System.out.print("Enter Name: ");
+        name = console.nextLine();
+        return name;
     }
 
     private void handleLogin() {
