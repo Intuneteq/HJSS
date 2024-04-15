@@ -1,5 +1,8 @@
 package com.hjss.menu;
 
+/**
+ * Application main menu
+ */
 public class MainMenu extends Menu {
     /**
      * Displays the options to the user.

@@ -1,5 +1,8 @@
 package com.hjss.menu;
 
+/**
+ * Menu to choose how the user views the timetable by day
+ */
 public class DayMenu extends Menu{
     /**
      * Displays the options to the user.

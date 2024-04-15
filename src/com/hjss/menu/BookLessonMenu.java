@@ -1,5 +1,8 @@
 package com.hjss.menu;
 
+/**
+ * Menu to choose how the user views the timetable
+ */
 public class BookLessonMenu extends Menu {
 
     /**
@@ -12,7 +15,6 @@ public class BookLessonMenu extends Menu {
         System.out.println("[1]: By Day");
         System.out.println("[2]: By Coach");
         System.out.println("[3]: By Grade");
-        System.out.println("[0]: Exit");
     }
 
     /**

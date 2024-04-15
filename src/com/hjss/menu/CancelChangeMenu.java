@@ -1,5 +1,8 @@
 package com.hjss.menu;
 
+/**
+ * Menu to choose either to cancel or change a booking
+ */
 public class CancelChangeMenu extends Menu {
     /**
      * Displays the options to the user.

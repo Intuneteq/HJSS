@@ -1,5 +1,8 @@
 package com.hjss.menu;
 
+/**
+ * Menu to choose the user gender
+ */
 public class GenderMenu extends Menu{
     /**
      * Displays the options to the user.

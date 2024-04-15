@@ -1,13 +1,14 @@
 package com.hjss.menu;
 
 import com.hjss.model.Booking;
-import com.hjss.model.Lesson;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Menu to prompt the user to select a booking from a list of their bookings
+ */
 public class BookingMenu extends Menu {
     List<Booking> bookings;
     private final Set<Integer> ids = new HashSet<>();

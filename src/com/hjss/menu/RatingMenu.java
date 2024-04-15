@@ -2,6 +2,9 @@ package com.hjss.menu;
 
 import com.hjss.enums.Rating;
 
+/**
+ * Menu to choose booking rating
+ */
 public class RatingMenu extends Menu {
     protected void print() {
         System.out.println();

@@ -8,13 +8,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The SelectLearnerMenu class represents a menu for selecting a learner for login.
+ * It displays a list of learners and allows the user to choose one for login.
+ */
 public class SelectLearnerMenu extends Menu {
 
-    private final List<Learner> learners;
-    private final Set<Integer> learnerIds;
+    private final List<Learner> learners; // List of all available learners
+    private final Set<Integer> learnerIds; // Set of learner IDs
 
+    /**
+     * Constructs a SelectLearnerMenu object.
+     * Initializes the list of learners and their IDs.
+     */
     public SelectLearnerMenu() {
+        // Get app instance
         App app = App.getInstance();
+
+        // Retrieve all learners registered to the application
         learners = app.getAppLearners();
 
         // Initialize the learnerIds set and populate it with learner IDs
@@ -32,7 +43,7 @@ public class SelectLearnerMenu extends Menu {
         System.out.println();
         System.out.println("************** Login A Learner **************");
         for (Learner lnr : learners) {
-            System.out.println("[" + padToTwoDigits(lnr.getId()) + "]: " + lnr.getName());
+            System.out.println("[" + App.padToTwoDigits(lnr.getId()) + "]: " + lnr.getName());
         }
         System.out.println("[0]: Exit");
     }

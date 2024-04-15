@@ -1,5 +1,8 @@
 package com.hjss.menu;
 
+/**
+ * Menu to choose grade
+ */
 public class GradeMenu extends Menu{
     /**
      * Displays the options to the user.

@@ -1,11 +1,8 @@
 package com.hjss.menu;
 
 import com.hjss.exceptions.InvalidOptionException;
-import com.hjss.model.Learner;
 
-import java.text.DecimalFormat;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -74,16 +71,5 @@ public abstract class Menu {
         } while (!isValid);
 
         return input;
-    }
-
-    /**
-     * Pads a number to two digits.
-     *
-     * @param number The number to pad.
-     * @return The padded number.
-     */
-    public String padToTwoDigits(double number) {
-        DecimalFormat df = new DecimalFormat("00");
-        return df.format(number);
     }
 }
