@@ -353,25 +353,9 @@ public class App {
     }
 
     private void handleAttendSwimmingLesson() {
-        Booking booking = null;
-        List<Booking> bookings = bookingRepository.read(getLearner());
+        Booking booking = getBooking();
 
-        if (bookings.isEmpty()) {
-            System.out.println();
-            System.out.println("\u001B[32mBooking List is currently empty!\u001B[0m");
-            return;
-        }
-
-        var bookingMenu = new BookingMenu(bookings);
-
-        int bookingId = bookingMenu.execute();
-
-        booking = bookingRepository.readById(bookingId);
-
-        if (booking == null) {
-            System.out.println("\u001B[31mError: Booking Not Found!\u001B[0m");
-            return;
-        }
+        if (booking == null) return;
 
         try {
             booking = bookingRepository.attend(booking);
@@ -524,25 +508,9 @@ public class App {
     }
 
     private void handleCancelBooking() {
-        Booking booking = null;
-        List<Booking> bookings = bookingRepository.read(getLearner());
+        Booking booking = getBooking();
 
-        if (bookings.isEmpty()) {
-            System.out.println();
-            System.out.println("\u001B[32mBooking List is currently empty!\u001B[0m");
-            return;
-        }
-
-        var bookingMenu = new BookingMenu(bookings);
-
-        int bookingId = bookingMenu.execute();
-
-        booking = bookingRepository.readById(bookingId);
-
-        if (booking == null) {
-            System.out.println("\u001B[31mError: Booking Not Found!\u001B[0m");
-            return;
-        }
+        if (booking == null) return;
 
         try {
             booking = bookingRepository.cancel(booking);
@@ -560,25 +528,9 @@ public class App {
     }
 
     private void handleChangeBooking() {
-        Booking booking = null;
-        List<Booking> bookings = bookingRepository.read(getLearner());
+        Booking booking = getBooking();
 
-        if (bookings.isEmpty()) {
-            System.out.println();
-            System.out.println("\u001B[32mBooking List is currently empty!\u001B[0m");
-            return;
-        }
-
-        var bookingMenu = new BookingMenu(bookings);
-
-        int bookingId = bookingMenu.execute();
-
-        booking = bookingRepository.readById(bookingId);
-
-        if (booking == null) {
-            System.out.println("\u001B[31mError: Booking Not Found!\u001B[0m");
-            return;
-        }
+        if (booking == null) return;
 
         // Find A new Lesson
         var bookLessonMenu = new BookLessonMenu();
@@ -718,6 +670,28 @@ public class App {
         System.out.print("Enter Name: ");
         name = console.nextLine();
         return name;
+    }
+
+    private Booking getBooking() {
+        List<Booking> bookings = bookingRepository.read(getLearner());
+
+        if (bookings.isEmpty()) {
+            System.out.println();
+            System.out.println("\u001B[32mBooking List is currently empty!\u001B[0m");
+            return null;
+        }
+        var bookingMenu = new BookingMenu(bookings);
+
+        int bookingId = bookingMenu.execute();
+
+        Booking booking = bookingRepository.readById(bookingId);
+
+        if (booking == null) {
+            System.out.println("\u001B[31mError: Booking Not Found!\u001B[0m");
+            return null;
+        }
+
+        return booking;
     }
 
     public List<Learner> getAppLearners() {
