@@ -115,6 +115,9 @@ public class Booking {
         return "Id: " + getId() +
                 "\nLesson Id: " + getLesson().getId() +
                 "\nLesson Grade: " + getLesson().getGrade() +
+                "\nLesson Coach: " + getLesson().getCoach().getName() +
+                "\nDay: " + getLesson().getTimeSlot().day() +
+                "\nTime: " + getLesson().getTimeSlot().time().getValue() +
                 "\nBooked By: " + getLearner().getName() +
                 "\nAttendance Status: " + getAttendanceStatus() +
                 "\nCancellation Status: " + getCancellationStatus();
