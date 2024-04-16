@@ -544,7 +544,7 @@ public class App {
             // Attempt to cancel the booking
             booking = bookingRepository.cancel(booking);
         } catch (BookingAttendedException e) {
-
+            System.out.println();
             // Handle exception cases.
             System.out.println("\u001B[31mError: " + e.getMessage() + "\u001B[0m");
             return;
@@ -582,6 +582,7 @@ public class App {
             booking = bookingRepository.change(booking, lesson);
         } catch (BookingAttendedException | BookingCancelledException | NoVacancyException | GradeMisMatchException |
                  DuplicateBookingException e) {
+            System.out.println();
             // Handle exception cases.
             System.out.println("\u001B[31mError: " + e.getMessage() + "\u001B[0m");
             return;

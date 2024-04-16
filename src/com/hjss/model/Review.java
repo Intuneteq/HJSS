@@ -90,7 +90,7 @@ public class Review {
                 " | Rating Score: " + getRating().getValue() +
                 " | Rating description: " + getRating().getDescription() +
                 " | Feedback: " + getFeedback() +
-                " | Booking: \n";
+                " | Booking: \n" + getBooking();
     }
 }
 
