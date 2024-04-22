@@ -38,7 +38,7 @@ The HJSS software is developed using the JAVA programming language through the i
 
 In addition to the provided design specifications, several assumptions were made during the design and implementation process:
 
-1. ` `**Lesson Duration:** The assumption is made that all swimming lessons have a fixed duration of one hour.
+1. **Lesson Duration:** The assumption is made that all swimming lessons have a fixed duration of one hour.
 1. **Maximum Learners per Lesson:** It is assumed that each swimming lesson can accommodate a maximum of four learners at a time.
 1. **Lesson Availability:** The system assumes that swimming lessons are available only on specific days and times, as outlined in the specifications.
 1. **Learner Age:** The system assumes that learners' ages are between 4 and 11 years old, as per the age range specified.
@@ -79,9 +79,9 @@ The application follows several design patterns to manage its structure and func
 1. **Template Design Pattern:** The repositories and menus within the application adhere to the template design pattern to facilitate uniformity and consistency in their implementations. A repository interface was defined to abstract common operations like data seeding and handling CRUD operations on the stored data entities**.** It is to be noted that all model classes have their respective repository class**.**  An abstract Menu class serves as the template for all menu classes in the application. It encapsulates common menu functionalities such as printing menu options, validating user input, and handling user interactions. Subclasses of Menu extend this template to implement menu-specific behavior while maintaining a consistent structure across all menus.
 1. **Repository Pattern:** The Repository Pattern is a design pattern commonly used in Java applications to manage interactions between the domain model and the data access layer. In the context of the Hatfield Junior Swimming School (HJSS) application, the Repository Pattern serves to abstract the data access logic from the domain model, promoting a clean separation of concerns and facilitating efficient data management. The Repository Pattern isolates domain objects, such as learners, lessons, and bookings, from the complexities of CRUD operations and model object business logic. This isolation shields the model from the implementation details of data persistence mechanisms. By centralizing data access logic within repository classes, the Repository Pattern helps minimize the scattering and duplication of query code across the application. Each repository class encapsulates the logic for CRUD (Create, Read, Update, Delete) operations related to a specific model entity, ensuring consistency and reusability of data access.
 
-   4. **UML CLASS DIAGRAM**
+**3.4 UML CLASS DIAGRAM**
 
-![](Aspose.Words.87a6ef31-d7d9-4fec-97bf-c33783533010.001.png)
+![Alt text](images/UCD.png?raw=true "UML")
 
 **4.0 TESTS**
 
@@ -97,23 +97,15 @@ During the development of the system, refactoring techniques were employed to im
 
 1. Eliminated code bad smells in my **handleRegistration** App method by reducing the method length and implementing private methods to individually prompt users for data.
 
-![A screen shot of a computer screen
+![Alt text](images/image1.png?raw=true "REFACTOR 1")
 
-Description automatically generated](Aspose.Words.87a6ef31-d7d9-4fec-97bf-c33783533010.002.png)
+![Alt text](images/image2.png?raw=true "REFACTOR 2")
 
-![A screen shot of a computer screen
-
-Description automatically generated](Aspose.Words.87a6ef31-d7d9-4fec-97bf-c33783533010.003.png)
-
-![A screen shot of a computer screen
-
-Description automatically generated](Aspose.Words.87a6ef31-d7d9-4fec-97bf-c33783533010.004.png)
+![Alt text](images/image3.png?raw=true "REFACTOR 3")
 
 1. Refactoring was implemented to eliminate code redundancy in the process of reading user bookings and prompting the user to select a booking for action. This functionality has been consolidated into a single method within the App class. Subsequently, this method is invoked in three other instances where similar functionality is required. This refactoring eliminates code bad smells, enhances code maintainability, and reduces duplication, ensuring that changes made to this functionality are applied uniformly across the class.
 
-![A screenshot of a computer program
-
-Description automatically generated](Aspose.Words.87a6ef31-d7d9-4fec-97bf-c33783533010.005.png)
+![Alt text](images/image4.png?raw=true "REFACTOR 4")
 
 
 
@@ -127,20 +119,6 @@ Version control was managed using Git, with GitHub serving as the remote reposit
 
 Here is also the link to my git repository: <https://github.com/Intuneteq/HJSS>
 
-![A screenshot of a computer
-
-Description automatically generated](Aspose.Words.87a6ef31-d7d9-4fec-97bf-c33783533010.006.png)![A screenshot of a computer
-
-Description automatically generated](Aspose.Words.87a6ef31-d7d9-4fec-97bf-c33783533010.007.png)
-
-![A screenshot of a computer
-
-Description automatically generated](Aspose.Words.87a6ef31-d7d9-4fec-97bf-c33783533010.008.png)![A screenshot of a computer
-
-Description automatically generated](Aspose.Words.87a6ef31-d7d9-4fec-97bf-c33783533010.009.png)![A screenshot of a computer
-
-Description automatically generated](Aspose.Words.87a6ef31-d7d9-4fec-97bf-c33783533010.010.png)
-
 **7.0 RUNNING THE APPLICATION**
 
 ***java -jar hatfieldJuniorSwimmingSchool.jar***
@@ -148,5 +126,5 @@ Description automatically generated](Aspose.Words.87a6ef31-d7d9-4fec-97bf-c33783
 **8.0 CONCLUSION**
 
 The design and implementation of the HJSS software adhere to the provided specifications while incorporating additional features and enhancements to improve usability and maintainability. By following best practices in software design and development, the HJSS system provides a robust and scalable solution for managing swimming lesson bookings effectively.
-PSE\_CW\_20055695
+
 
